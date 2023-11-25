@@ -7,11 +7,11 @@
                   <div class="ajax"></div>
                </div>
             </div>
-            <div class="section-bar clearfix">
+            {{-- <div class="section-bar clearfix">
                <div class="row">
                   @include('pages.include.locphim')
                </div>
-             </div>
+             </div> --}}
             <div id="halim_related_movies-2xx" class="wrap-slider">
                <div class="section-bar clearfix">
                   <h3 class="section-title"><span>PHIM HOT</span></h3>
@@ -22,7 +22,19 @@
                   <article class="thumb grid-item post-38498">
                      <div class="halim-item">
                         <a class="halim-thumb" href="{{route('movie',$hot->slug)}}" title="Đại Thánh Vô Song">
-                           <figure><img class="lazy img-responsive" src="{{asset('uploads/movie/'.$hot->image)}}" alt="{{$hot->title}}" title="{{$hot->title}}"></figure>
+                           <figure>
+                              @php
+                                 $image_check = substr($hot->image,0,5);
+                              @endphp
+                              @if($image_check =='https')
+                              <img class="lazy img-responsive" src="{{$hot->image}}" alt="{{$hot->title}}" title="{{$hot->title}}">
+
+                              @else
+                              <img class="lazy img-responsive" src="{{asset('uploads/movie/'.$hot->image)}}" alt="{{$hot->title}}" title="{{$hot->title}}">
+
+
+                              @endif
+                           </figure>
                            <span class="status">
                               @if($hot->resolution == 0) HD
                                  @elseif($hot->resolution == 1) SD
@@ -89,7 +101,16 @@
                      <article class="col-md-3 col-sm-3 col-xs-6 thumb grid-item post-37606">
                         <div class="halim-item">
                            <a class="halim-thumb" href="{{route('movie',$mov->slug)}}">
-                              <figure><img class="lazy img-responsive" src="{{asset('uploads/movie/'.$mov->image)}}" alt="{{$mov->title}}" title="{{$mov->title}}"></figure>
+                              <figure>
+                                 @php
+                                    $image_check = substr($mov->image,0,5);
+                                 @endphp
+                                 @if($image_check =='https')
+                                 <img class="lazy img-responsive" src="{{$mov->image}}" alt="{{$mov->title}}" title="{{$mov->title}}">
+                                 @else
+                                 <img class="lazy img-responsive" src="{{asset('uploads/movie/'.$mov->image)}}" alt="{{$mov->title}}" title="{{$mov->title}}">
+                                 @endif
+                              </figure>
                               <span class="status">
                                  @if($mov->resolution == 0) HD
                                  @elseif($mov->resolution == 1) SD

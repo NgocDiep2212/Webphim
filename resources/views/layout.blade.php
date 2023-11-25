@@ -180,25 +180,30 @@
      
       <script type="text/javascript">
       $(document).ready(function(){
-         $('#timkiem').keyup(function(){
-            $('#result').html('');
-            var search = $('#timkiem').val();
-            if(search!=''){
-               var expression = new RegExp(search, "i");
+         $('#timkiem').keyup(function() {
+  $('#result').html('');
+  var search = $('#timkiem').val();
+  if (search != '') {
+    var expression = new RegExp(search, "i");
+    var existingMovies = []; // Khởi tạo mảng trống để lưu trữ tiêu đề phim hiện có
 
-               $.getJSON('/json_file/movies.json',function(data){
-                  $.each(data, function(key,value){
-                     if(value.title.search(expression) != -1){
-                        $('#result').css('display','inherit');
-                        $('#result').append(' <li style="cursor:pointer;" class="list-group-item link-class"><img src="uploads/movie/'+value.image+'" width="40" height="40" class="" />'+value.title+'<br> | <span class="text-muted">'+value.description+'</span></li>');
-                        // $('#result').append(' <li style="cursor:pointer; display: flex; max-height: 100px;" class="list-group-item link-class"><img src="uploads/movie/'+value.image+'" width="60px" class="" /><div style="flex-direction: column; margin-left: 2px;"><h4 width="100%">'+value.title+'</h4><span style="display: -webkit-box; max-height: 8.2rem; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: normal; -webkit-line-clamp: 5; line-height: 1.6rem;" class="text-muted">| '+value.description+'</span></div></li>');
-                     }
-                  });
-               });
-            }else{
-               $('#result').css('display','none');
-            }
-         })
+    $.getJSON('/json_file/movies.json', function(data) {
+      $.each(data, function(key, value) {
+        if (value.title.search(expression) != -1) {
+          if (existingMovies.indexOf(value.title) === -1) { // Kiểm tra xem tiêu đề phim đã có trong mảng chưa
+            $('#result').css('display', 'inherit');
+            $('#result').append('<li style="cursor:pointer;" class="list-group-item link-class"><img src="' + value.image + '" width="40" height="40" class="" />' + value.title + '<br> | <span class="text-muted">' + value.description + '</span></li>');
+            existingMovies.push(value.title); // Thêm tiêu đề phim vào mảng để tránh trùng lặp
+          }
+        }
+      });
+    });
+  } else {
+    $('#result').css('display', 'none');
+  }
+});
+
+
 
          $('#result').on('click','li', function(){
             var click_text = $(this).text().split('|');

@@ -12,8 +12,8 @@
                     <th scope="col">Tên phim</th>
                     <th scope="col">Số tập phim</th>
                     <th scope="col">Tập phim</th>
-                    <th scope="col">Từ khóa</th>
-                    <th scope="col">Thời lượng phim</th>
+                    {{-- <th scope="col">Từ khóa</th>
+                    <th scope="col">Thời lượng phim</th> --}}
                     <th scope="col">Hình ảnh</th>
                     <th scope="col">Phim hot</th>
                     <th scope="col">Định dạng</th>
@@ -42,7 +42,7 @@
                     <td>
                       <a href="{{route('add-episode',[$cate->id])}}" class="btn btn-danger btn-sm">Thêm tập phim</a>
                     </td>
-                    <td>
+                    {{-- <td>
                       @if(strlen($cate->tags)>100)
                         @php
                          $tag = substr($cate->tags,0 , 50);
@@ -50,8 +50,19 @@
                         @endphp
                       @endif  
                     </td>
-                    <td>{{$cate->duration}}</td>
-                    <td> <img width="60%" src="{{asset('uploads/movie/'.$cate->image)}}" alt=""></td>
+                    <td>{{$cate->duration}}</td> --}}
+                    
+                    <td> 
+                      @php
+                        $image_check = substr($cate->image,0,5);
+                      @endphp
+                      @if($image_check =='https')
+                      <img width="60%" src="{{$cate->image}}" alt="">
+                      @else
+                      <img width="60%" src="{{asset('uploads/movie/'.$cate->image)}}" alt="">
+
+                      @endif
+                    </td>
                     <td>
                       @if($cate->phim_hot == 0) Không
                       @else Có

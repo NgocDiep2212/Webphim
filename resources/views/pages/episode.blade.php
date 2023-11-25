@@ -1,4 +1,4 @@
-@extends('layout')
+{{-- @extends('layout')
 @section('content')
 <div class="row container" id="wrapper">
     <div class="halim-panel-filter">
@@ -190,4 +190,4 @@
     </main>
     @include('pages.include.sidebar')
 </div>
-@endsection
+@endsection --}}

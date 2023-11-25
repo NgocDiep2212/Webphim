@@ -51,6 +51,10 @@
                             
                         </div>
                     @endif
+                    <div class="form-group">
+                        {!! Form::label('linkserver', 'Link Server', []) !!}
+                        {!! Form::select('linkserver',$linkmovie, '',  ['class'=>'form-control']) !!}
+                    </div>
                     @if(!isset($episode))
                         {!! Form::submit('Thêm tập phim', ['class'=>'btn btn-success']) !!}
                     @else
@@ -73,6 +77,7 @@
                     <th scope="col">Movie image</th>
                     <th scope="col">Movie link</th>
                     <th scope="col">Episode</th>
+                    <th scope="col">Server</th>
                     {{-- <th scope="col">Active/Inactive</th> --}}
                     <th scope="col">Manage</th>
                   </tr>
@@ -92,6 +97,14 @@
                                 @endif 
                                 
                             </td> --}}
+                            
+                            <td>
+                                @foreach($list_server as $key =>$server_link)
+                                    @if($cate->server == $server_link->id )
+                                        {{$server_link->title}}
+                                    @endif
+                                @endforeach
+                            </td>
                             <td>
                                 {!! Form::open([
                                     'method' => 'DELETE',

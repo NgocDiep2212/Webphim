@@ -33,12 +33,21 @@
                 </div>
                 <div class="movie_info col-xs-12">
                    <div class="movie-poster col-md-3">
-                      <img class="movie-thumb" src="{{asset('uploads/movie/'.$movie->image)}}" alt="GÓA PHỤ ĐEN">
+                     @php
+                        $image_check = substr($movie->image,0,5);
+                     @endphp
+                     @if($image_check =='https')
+                     <img class="movie-thumb" src="{{$movie->image}}" alt="GÓA PHỤ ĐEN">
+
+                     @else
+                     <img class="movie-thumb" src="{{asset('uploads/movie/'.$movie->image)}}" alt="GÓA PHỤ ĐEN">
+
+                     @endif
                       @if($movie->resolution != 5)
-                        @if(isset($episode->movie))
+                        @if(isset($movie->episode))
                         <div class="bwa-content">
                            <div class="loader"></div>
-                           <a href="{{url('xem-phim/'.$movie->slug.'/tap-'.$episode_first->episode)}}" class="bwac-btn">
+                           <a href="{{url('xem-phim/'.$movie->slug.'/tap-'.$episode_first->episode.'/server-'.$episode_first->server)}}" class="bwac-btn">
                            <i class="fa fa-play"></i>
                            </a>
                         </div>
@@ -136,7 +145,7 @@
             <div class="entry-content htmlwrap clearfix">
                <div class="video-item halim-entry-box">
                   <article id="post-38424" class="item-content">
-                     {{$movie->description}}
+                     @php echo $movie->description @endphp
                   </article>
                </div>
             </div>
@@ -171,7 +180,15 @@
              <div class="entry-content htmlwrap clearfix">
                 <div class="video-item halim-entry-box">
                    <article id="watch_trailer" class="item-content">
-                     <iframe width="100%" height="315" src="https://www.youtube.com/embed/{{$movie->trailer}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+@php
+// // Tách URL thành một mảng dựa trên ký tự '?'
+// $parts = explode('=', $movie->trailer);
+
+// // Lấy phần thứ hai của mảng
+// $movie_trailer_url= $parts[1];
+echo '<iframe width="100%" height="315" src="'.$movie->trailer.'" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+@endphp
+
                    </article>
                 </div>
              </div>
@@ -185,8 +202,8 @@
                   @php
                      $current_url = Request::url();
                   @endphp
-                  <article class="item-content">
-                     <div class="fb-comments" data-href="{{$current_url}}" data-width="100%" data-numposts="10"></div>
+                  <article class="item-content" style="background-color: white">
+                     <div class="fb-comments" data-href="{{$current_url}}" data-width="100%" data-numposts="5"></div>
                     
                   </article>
                </div>
@@ -203,7 +220,19 @@
                <article class="thumb grid-item post-38498">
                   <div class="halim-item">
                      <a class="halim-thumb" href="{{route('movie',$hot->slug)}}" title="{{$hot->title}}">
-                        <figure><img class="lazy img-responsive" src="{{asset('uploads/movie/'.$hot->image)}}" alt="{{$hot->title}}" title="{{$hot->title}}"></figure>
+                        <figure>
+                           @php
+                              $image_check = substr($hot->image,0,5);
+                           @endphp
+                           @if($image_check =='https')
+                           <img class="lazy img-responsive" src="{{$hot->image}}" alt="{{$hot->title}}" title="{{$hot->title}}">
+
+                           @else
+                           <img class="lazy img-responsive" src="{{asset('uploads/movie/'.$hot->image)}}" alt="{{$hot->title}}" title="{{$hot->title}}">
+
+
+                           @endif
+                        </figure>
                         <span class="episode"><i class="fa fa-play" aria-hidden="true"></i>
                            @if($hot->vietsub == 0) 
                               Phụ đề

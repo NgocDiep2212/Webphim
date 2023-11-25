@@ -99,12 +99,29 @@
                    <div role="tabpanel" class="tab-pane active server-1" id="server-0">
                       <div class="halim-server">
                          <ul class="halim-list-eps">
-                           @foreach($movie->episode as $key => $sotap)
-                            <a href="{{url('xem-phim/'.$movie->slug.'/tap-'.$sotap->episode)}}"> 
-                                <li class="halim-episode">
-                                 <span class="halim-btn halim-btn-2 {{$sotap->episode == $tapphim ? 'active' : ''}} halim-info-1-1 box-shadow" data-post-id="37976" data-server="1" data-episode="1" data-position="first" data-embed="0" data-title="Xem phim {{$movie->title}} - Tập {{$sotap->episode}} - {{$movie->name_eng}} - Vietsub + Thuyết minh" data-h1="{{$movie->title}}">{{$sotap->episode}}</span></li>
-                            </a>
-                            @endforeach
+                           {{-- moi server --}}
+                           @foreach($server as $key => $ser)
+                           {{-- moi tap trong server--}}
+                              @foreach($episode_movie as $key => $ser_mov)
+                              {{-- neu server trong tap == server hien tai  --}}
+                                 @if($ser_mov->server == $ser->id)
+                                 {{-- server phim --}}
+                                    <li class="halim-episode"><span class="halim-btn halim-btn-2 halim-info-1-1 box-shadow">{{$ser->title}}</span></li>
+                                 {{-- tập phim --}}
+                                    <ul class="halim-list-eps">
+                                       @foreach($episode_list as $key => $epi)
+                                          @if($epi->server == $ser->id)
+                                             <a href="{{url('xem-phim/'.$movie->slug.'/tap-'.$epi->episode.'/server-'.$epi->server)}}"> 
+                                                <li class="halim-episode">
+                                                   <span class="halim-btn halim-btn-2 {{$epi->episode == $tapphim && $server_active == 'server-'.$ser->id ? 'active' : ''}} halim-info-1-1 box-shadow" data-title="Xem phim {{$movie->title}} - Tập {{$epi->episode}} - {{$movie->name_eng}} - Vietsub + Thuyết minh" data-h1="{{$movie->title}}">{{$epi->episode}}</span></li>
+                                             </a>
+                                          
+                                          @endif
+                                       @endforeach
+                                    </ul>
+                                 @endif
+                              @endforeach
+                           @endforeach
                          </ul>
                          <div class="clearfix"></div>
                       </div>
@@ -126,7 +143,16 @@
               <article class="thumb grid-item post-38498">
                  <div class="halim-item">
                     <a class="halim-thumb" href="{{route('movie',$hot->slug)}}" title="{{$hot->title}}">
-                       <figure><img class="lazy img-responsive" src="{{asset('uploads/movie/'.$hot->image)}}" alt="{{$hot->title}}" title="{{$hot->title}}"></figure>
+                       <figure>
+                        @php
+                           $image_check = substr($hot->image,0,5);
+                        @endphp
+                        @if($image_check =='https')
+                        <img class="lazy img-responsive" src="{{$hot->image}}" alt="{{$hot->title}}" title="{{$hot->title}}">
+                        @else
+                        <img class="lazy img-responsive" src="{{asset('uploads/movie/'.$hot->image)}}" alt="{{$hot->title}}" title="{{$hot->title}}">
+                        @endif
+                     </figure>
                        <span class="episode"><i class="fa fa-play" aria-hidden="true"></i>
                           @if($hot->vietsub == 0) 
                              Phụ đề

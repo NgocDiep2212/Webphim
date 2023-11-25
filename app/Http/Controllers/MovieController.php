@@ -68,7 +68,7 @@ class MovieController extends Controller
             $output .='<div class="item">
                 <a href="'.url('phim/'.$mov->slug).'" title="'.$mov->title.'">
                     <div class="item-link">
-                    <img src="'.asset("uploads/movie/".$mov->image).'" class="lazy post-thumb" alt="'.$mov->title.'" title="'.$mov->title.'" />
+                    <img src="'.asset($mov->image).'" class="lazy post-thumb" alt="'.$mov->title.'" title="'.$mov->title.'" />
                     <span class="is_trailer">'.$text.'</span>
                     </div>
                     <p class="title">'.$mov->title.'</p>
@@ -100,7 +100,7 @@ class MovieController extends Controller
             $output .='<div class="item">
                 <a href="'.url('phim/'.$mov->slug).'" title="'.$mov->title.'">
                     <div class="item-link">
-                    <img src="'.asset("uploads/movie/".$mov->image).'" class="lazy post-thumb" alt="'.$mov->title.'" title="'.$mov->title.'" />
+                    <img src="'.asset($mov->image).'" class="lazy post-thumb" alt="'.$mov->title.'" title="'.$mov->title.'" />
                     <span class="is_trailer">'.$text.'</span>
                     </div>
                     <p class="title">'.$mov->title.'</p>
@@ -283,7 +283,7 @@ class MovieController extends Controller
         Movie_Genre::whereIn('movie_id',[$movie->id])->delete();
         
         //xoa tap phim
-        Episode_Genre::whereIn('movie_id',[$movie->id])->delete();
+        Episode::whereIn('movie_id',[$movie->id])->delete();
         
         $movie->delete();
         return redirect()->back();

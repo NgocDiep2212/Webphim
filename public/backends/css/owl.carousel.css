@@ -27,7 +27,7 @@
 	height: 54px;
 }
 .owl-next{
-	background: url(../images/divice-pagenations.png) no-repeat -35px 0px;
+	background: url(../images/1) no-repeat -35px 0px;
 	position: absolute;
 	right: -8%;
 	top: 30%;
@@ -51,7 +51,7 @@
 .owl-theme .owl-controls .owl-page{
 	display: inline-block;
 	zoom: 1;
-	*display: inline;/*IE7 life-saver */
+	display: inline;/*IE7 life-saver */
 }
 .owl-theme .owl-controls .owl-page span{
 	display: block;

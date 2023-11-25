@@ -169,12 +169,33 @@
                   <ul class="treeview-menu">
                     <li>
                       <a href="{{route('movie.create')}}"
-                        ><i class="fa fa-angle-right"></i>Thêm Phim</a
-                      >
+                        ><i class="fa fa-angle-right"></i>Thêm Phim</a>
                     </li>
                     <li>
                       <a href="{{route('movie.index')}}"
-                        ><i class="fa fa-angle-right"></i>Liệt Kê Phim</a
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Phim</a>
+                    </li>
+                    <li>
+                      <a href="{{route('leech-movie')}}"
+                        ><i class="fa fa-angle-right"></i>Leech Phim</a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="treeview {{($segment == 'linkmovie' ? 'active' : '')}}">
+                  <a href="#">
+                    <i class="fa fa-film" aria-hidden="true"></i>
+                    <span>Link Phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('linkmovie.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Link Phim</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('linkmovie.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Link Phim</a
                       >
                     </li>
                   </ul>
@@ -487,12 +508,12 @@
       <!-- main content start-->
       <div id="page-wrapper">
         <div class="main-page">
-          <div class="col_3">
+          <div class="col_4">
             <div class="col-md-3 widget widget1">
               <div class="r3_counter_box">
                 <i class="fa fa-folder-open pull-left icon-rounded"></i>
                 <div class="stats">
-                  <h5><strong>$452</strong></h5>
+                  <h5><strong>{{$category_total}}</strong></h5>
                   <span>Danh mục</span>
                 </div>
               </div>
@@ -501,7 +522,7 @@
               <div class="r3_counter_box">
                 <i class="fa fa-folder-o user1 pull-left icon-rounded"></i>
                 <div class="stats">
-                  <h5><strong>$1019</strong></h5>
+                  <h5><strong>{{$genre_total}}</strong></h5>
                   <span>Thể loại</span>
                 </div>
               </div>
@@ -510,7 +531,7 @@
               <div class="r3_counter_box">
                 <i class="pull-left fa fa-globe user2 icon-rounded"></i>
                 <div class="stats">
-                  <h5><strong>$1012</strong></h5>
+                  <h5><strong>{{$country_total}}</strong></h5>
                   <span>Quốc gia</span>
                 </div>
               </div>
@@ -519,20 +540,24 @@
               <div class="r3_counter_box">
                 <i class="pull-left fa fa-film dollar1 icon-rounded"></i>
                 <div class="stats">
-                  <h5><strong>$450</strong></h5>
+                  <h5><strong>{{$movie_total}}</strong></h5>
                   <span>Phim</span>
                 </div>
               </div>
             </div>
-            <div class="col-md-3 widget">
+            {{-- <div class="col-md-3 widget">
               <div class="r3_counter_box">
                 <i class="pull-left fa fa-users dollar2 icon-rounded"></i>
                 <div class="stats">
-                  <h5><strong>1450</strong></h5>
-                  <span>Total Users</span>
+                  <span>Dang online: {{\Tracker::onlineUsers()->count()}}<br/></span>
+                  <span>Total Users truy cap: {{$total_users}}<br/></span>
+                  <span>Total Users truy cap tuan: {{$total_users_week}}<br/></span>
+                  <span>1 thang: {{$total_users_month}}<br/></span>
+                  <span>3 thang: {{$total_users_3months}}<br/></span>
+                  <span>1 nam: {{$total_users_year}}<br/></span>
                 </div>
               </div>
-            </div>
+            </div> --}}
             <div class="clearfix"></div>
           </div>
           <div class="row-one widgettable">
@@ -540,7 +565,7 @@
           </div>
 
           {{-- main content --}}
-          <div class="col-md-12">
+          <div class="container-fluild" style="box-sizing: unset; overflow-x: auto;">
             @yield('content')
           </div>
         </div>
@@ -577,5 +602,129 @@
     
     <script src="{{asset('backends/js/bootstrap.js')}}"></script>
     <!-- //Bootstrap Core JavaScript -->
+    <script type="text/javascript">
+      $('.select-year').change(function(){
+          var year = $(this).find(':selected').val();
+          var id_phim = $(this).attr('id');
+          $.ajax({
+              url:"{{url('/update-year-phim')}}",
+              method:"GET",
+              data:{year:year,id_phim:id_phim},
+              success:function(){
+                  alert('Thay đổi năm phim '+year+' thành công!');
+              }
+          });
+      })
+  </script>
+  <script type="text/javascript">
+      $('.select-season').change(function(){
+          var season = $(this).find(':selected').val();
+          var id_phim = $(this).attr('id');
+          $.ajax({
+              url:"{{url('/update-season-phim')}}",
+              method:"GET",
+              data:{season:season,id_phim:id_phim},
+              success:function(){
+                  alert('Thay đổi thành season '+season+' thành công!');
+              }
+          });
+      })
+  </script>
+  <script type="text/javascript">
+      $('.select-topview').change(function(){
+          var topview = $(this).find(':selected').val();
+          var id_phim = $(this).attr('id');
+          if(topview == 1){
+              var text = 'Ngày';
+          }else if(topview == 2){
+              var text = 'Tuần';
+          }else if(topview == 3){
+              var text = 'Tháng';
+          }
+          $.ajax({
+              url:"{{url('/update-topview-phim')}}",
+              method:"GET",
+              data:{topview:topview,id_phim:id_phim},
+              success:function(){
+                  alert('Thay đổi phim theo topview '+text+' thành công!');
+              }
+          });
+      })
+  </script>
+  <script type="text/javascript">
+      $(document).ready(function (){
+          let table = new DataTable('#tablephim');
+      });
+      function ChangeToSlug()
+          {
+  
+              var slug;
+           
+              //Lấy text từ thẻ input title 
+              slug = document.getElementById("slug").value;
+              slug = slug.toLowerCase();
+              //Đổi ký tự có dấu thành không dấu
+                  slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+                  slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+                  slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+                  slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+                  slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+                  slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+                  slug = slug.replace(/đ/gi, 'd');
+                  //Xóa các ký tự đặt biệt
+                  slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
+                  //Đổi khoảng trắng thành ký tự gạch ngang
+                  slug = slug.replace(/ /gi, "-");
+                  //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
+                  //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
+                  slug = slug.replace(/\-\-\-\-\-/gi, '-');
+                  slug = slug.replace(/\-\-\-\-/gi, '-');
+                  slug = slug.replace(/\-\-\-/gi, '-');
+                  slug = slug.replace(/\-\-/gi, '-');
+                  //Xóa các ký tự gạch ngang ở đầu và cuối
+                  slug = '@' + slug + '@';
+                  slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+                  //In slug ra textbox có id “slug”
+              document.getElementById('convert_slug').value = slug;
+          }
+  
+      </script>
+      <script type="text/javascript">
+          $('.order_position').sortable({
+              placeholder: 'ui-state-highlight',
+              update: function(event,ui){
+                  var array_id = [];
+                  $('.order_position tr').each(function(){
+                      array_id.push($(this).attr('id'));
+                  })
+                  $.ajax({
+                      headers:{ //lay token, dinh danh du lieu 
+                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                      },
+                      url: "{{route('resorting')}}",
+                      method:"POST",
+                      data:{array_id:array_id},
+                      success: function(data){
+                          alert('Sắp xếp thứ tự thành công');
+                      }
+                  })
+              }
+          })    
+      </script>
+
+      {{-- chon tap phim trong them tap phim --}}
+      <script type="text/javascript">
+          $('.select-movie').change(function(){
+              var id = $(this).val();
+              $.ajax({
+                      url: "{{route('select-movie')}}",
+                      method:"GET",
+                      data:{id:id},
+                      success: function(data){
+                          $('#show_movie').html(data);
+                      }
+                  })
+          })
+      </script>
   </body>
 </html>

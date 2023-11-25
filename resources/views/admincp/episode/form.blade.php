@@ -52,6 +52,12 @@
                             
                         </div>
                     @endif
+
+                    <div class="form-group">
+                        {!! Form::label('linkserver', 'Link Server', []) !!}
+                        {!! Form::select('linkserver',$linkmovie, $episode->server,  ['class'=>'form-control']) !!}
+                    </div>
+
                     @if(!isset($episode))
                         {!! Form::submit('Thêm tập phim', ['class'=>'btn btn-success']) !!}
                     @else

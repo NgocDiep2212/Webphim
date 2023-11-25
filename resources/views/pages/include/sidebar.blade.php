@@ -15,7 +15,14 @@
               <div class="item post-37176">
                  <a href="{{route('movie',$hot_sidebar->slug)}}" title="$hot_sidebar->title">
                     <div class="item-link">
-                       <img src="{{asset('uploads/movie/'.$hot_sidebar->image)}}" class="lazy post-thumb" alt="$hot_sidebar->title" title="$hot_sidebar->title" />
+                     @php
+                     $image_check = substr($hot_sidebar->image,0,5);
+                   @endphp
+                   @if($image_check =='https')
+                   <img src="{{$hot_sidebar->image}}" class="lazy post-thumb" alt="$hot_sidebar->title" title="$hot_sidebar->title" />
+                   @else
+                   <img src="{{asset('uploads/movie/'.$hot_sidebar->image)}}" class="lazy post-thumb" alt="$hot_sidebar->title" title="$hot_sidebar->title" />
+                   @endif
                        <span class="is_trailer">
                            @if($hot_sidebar->resolution == 0) HD
                            @elseif($hot_sidebar->resolution == 1) SD
@@ -71,7 +78,14 @@
              <div class="item post-37176">
                 <a href="{{route('movie',$hot_sidebar->slug)}}" title="$hot_sidebar->title">
                    <div class="item-link">
+                     @php
+                        $image_check = substr($hot_sidebar->image,0,5);
+                      @endphp
+                      @if($image_check =='https')
+                      <img src="{{$hot_sidebar->image}}" class="lazy post-thumb" alt="$hot_sidebar->title" title="$hot_sidebar->title" />
+                      @else
                       <img src="{{asset('uploads/movie/'.$hot_sidebar->image)}}" class="lazy post-thumb" alt="$hot_sidebar->title" title="$hot_sidebar->title" />
+                      @endif
                       <span class="is_trailer">
                           @if($hot_sidebar->resolution == 0) HD
                           @elseif($hot_sidebar->resolution == 1) SD

@@ -17,10 +17,10 @@
        <div class="form-group">
           <select class="form-control stylish_filter" name="order" id="exampleFormControlSelect1">
             <option value="">Sắp xếp</option>
-            <option value="date">Ngày đăng</option>
-            <option value="year_release">Năm sản xuất</option>
-            <option value="name_a_z">Tên phim</option>
-            <option value="watch_view">Lượt xem</option>
+            <option {{ (isset($_GET['order']) && $_GET['order'] == 'created') ? 'selected' : '' }} value="created">Ngày đăng mới nhất</option>
+            <option {{ (isset($_GET['order']) && $_GET['order'] == 'year') ? 'selected' : '' }} value="year">Năm sản xuất</option>
+            <option {{ (isset($_GET['order']) && $_GET['order'] == 'title') ? 'selected' : '' }} value="title">Tên phim</option>
+            <option {{ (isset($_GET['order']) && $_GET['order'] == 'count_views') ? 'selected' : '' }} value="count_views">Lượt xem</option>
           </select>
         </div>
     </div>
