@@ -100,28 +100,37 @@
                       <div class="halim-server">
                          <ul class="halim-list-eps">
                            {{-- moi server --}}
-                           @foreach($server as $key => $ser)
-                           {{-- moi tap trong server--}}
-                              @foreach($episode_movie as $key => $ser_mov)
-                              {{-- neu server trong tap == server hien tai  --}}
-                                 @if($ser_mov->server == $ser->id)
-                                 {{-- server phim --}}
-                                    <li class="halim-episode"><span class="halim-btn halim-btn-2 halim-info-1-1 box-shadow">{{$ser->title}}</span></li>
-                                 {{-- tập phim --}}
-                                    <ul class="halim-list-eps">
-                                       @foreach($episode_list as $key => $epi)
-                                          @if($epi->server == $ser->id)
-                                             <a href="{{url('xem-phim/'.$movie->slug.'/tap-'.$epi->episode.'/server-'.$epi->server)}}"> 
-                                                <li class="halim-episode">
-                                                   <span class="halim-btn halim-btn-2 {{$epi->episode == $tapphim && $server_active == 'server-'.$ser->id ? 'active' : ''}} halim-info-1-1 box-shadow" data-title="Xem phim {{$movie->title}} - Tập {{$epi->episode}} - {{$movie->name_eng}} - Vietsub + Thuyết minh" data-h1="{{$movie->title}}">{{$epi->episode}}</span></li>
-                                             </a>
-                                          
-                                          @endif
-                                       @endforeach
-                                    </ul>
-                                 @endif
-                              @endforeach
-                           @endforeach
+               @foreach($server as $key => $ser)
+               {{-- Lặp qua từng server --}}
+                @if(count($ser->sodes) != 0)
+                   <li class="halim-episode">
+                      <span class="halim-btn halim-btn-2 halim-info-1-1 box-shadow">{{$ser->title}}</span>
+                   </li>
+
+                   <ul style="list-style: none" class="row">
+                   @foreach($ser->sodes as $key => $ser_mov)
+                      @if($ser_mov->movie_id == $movie->id)
+                      <li>
+                         {{-- Kiểm tra xem tập hiện tại có trùng với tập đang xem không --}}
+                         @if($episode->episode_id == $ser_mov->id)
+                            {{-- Hiển thị trạng thái active --}}
+                            <span class="active " style="background-color: rgb(227, 227, 242);padding: 8px; border-radius: 5px;" >
+                         @else
+                            <span class="">
+                         @endif
+                         {{-- Hiển thị liên kết của tập --}}
+                         <a href="{{url('xem-phim/'.$ser_mov->movie->slug.'/tap-'.$ser_mov->episode.'/server-'.$ser_mov->pivot->server_id)}}"> 
+                            Tập {{$ser_mov->episode}}
+                         </a>
+                   </li>
+                      @endif
+                   @endforeach 
+                </ul>
+                @endif
+              @endforeach
+
+
+                          
                          </ul>
                          <div class="clearfix"></div>
                       </div>

@@ -14,7 +14,7 @@
       <link rel="shortcut icon" href="https://www.pngkey.com/png/detail/360-3601772_your-logo-here-your-company-logo-here-png.png" type="image/x-icon" />
       <meta name="revisit-after" content="1 days" />
       <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
-      <title>Phim hay 2021 - Xem phim hay nhất</title>
+      <title>Phim hay 2023 - Xem phim hay nhất</title>
       <meta name="description" content="Phim hay 2021 - Xem phim hay nhất, xem phim online miễn phí, phim hot , phim nhanh" />
       <link rel="canonical" href="">
       <link rel="next" href="" />
@@ -34,20 +34,53 @@
       
       <link rel='stylesheet' id='style-css' href='{{asset('css/style.css?ver=5.7.2')}}' media='all' />
       <link rel='stylesheet' id='wp-block-library-css' href='{{asset('css/style.min.css?ver=5.7.2')}}' media='all' />
+      <script src="{{asset('js/movie.js')}}" type='text/javascript'></script>
       <script type='text/javascript' src='{{asset('js/jquery.min.js?ver=5.7.2')}}' id='halim-jquery-js'></script>
       <style type="text/css" id="wp-custom-css">
          .textwidget p a img {
          width: 100%;
          }
+         
       </style>
-      <style>#header .site-title {background: url(https://www.pngkey.com/png/detail/360-3601772_your-logo-here-your-company-logo-here-png.png) no-repeat top left;background-size: contain;text-indent: -9999px;}</style>
+      <style> 
+         /* Ẩn modal theo mặc định */
+         #my-modal {
+         display: none;
+         position: absolute;
+         top: 145px;
+         left: 18%;
+         width: 380px;
+         transform: translate(-50%, -50%);
+         background-color: #12171b;
+         padding: 16px;
+         border-radius: 10px;
+         z-index: 10;
+         text-align: left;
+         color: #ffffffe0;
+         border: 1px solid white;
+         }
+
+         /* Hiển thị modal khi hover vào button */
+         #my-button:hover + #my-modal {
+         display: block;
+         }
+
+         /* Nút đóng modal */
+         #close-modal {
+         background-color: #ccc;
+         padding: 5px 10px;
+         border-radius: 5px;
+         cursor: pointer;
+         }
+      </style>
+      <style>#header .site-title {background: url(https://phimmoiiii.net/wp-content/uploads/2023/03/phimmoi.png) no-repeat top left;background-size: contain;text-indent: -9999px;}</style>
    </head>
    <body class="home blog halimthemes halimmovies" data-masonry="">
       <header id="header">
          <div class="container">
             <div class="row" id="headwrap">
                <div class="col-md-3 col-sm-6 slogan">
-                  <p class="site-title"><a class="logo" href="" title="phim hay ">Phim Hay</p>
+                  <p class="site-title" style="margin-top: 14px"><a class="logo" href="" title="phim hay ">Phim Hay</p>
                   </a>
                </div>
                <div class="col-md-5 col-sm-6 halim-search-form hidden-xs">
@@ -55,8 +88,8 @@
                      <div class="col-xs-12">
                        
                            <div class="form-group form-timkiem">
-                              <div class="input-group col-xs-12">
-                                 <form action="{{route('tim-kiem')}}" method="get">
+                              <div class="input-group col-xs-12 ">
+                                 <form action="{{route('tim-kiem')}}" method="get" style="display: flex" >
                                     <input id="timkiem" type="text" name="search" class="form-control" placeholder="Tìm kiếm..." autocomplete="off">
                                     <button class="btn btn-primary" >Tìm kiếm</button>
                                  </form>
@@ -70,13 +103,102 @@
                      </div>
                   </div>
                </div>
-               <div class="col-md-4 hidden-xs">
-                  <div id="get-bookmark" class="box-shadow"><i class="hl-bookmark"></i><span> Bookmarks</span><span class="count">0</span></div>
-                  <div id="bookmark-list" class="hidden bookmark-list-on-pc">
-                     <ul style="margin: 0;"></ul>
+
+                  <div class="col-md-4 hidden-xs" style="display: flex;">
+                     <div style="relative">
+                      
+                        <a href="{{route('muagoi')}}" id="my-button" class="btn btn-warning">
+                           Đăng ký gói
+                        </a>
+                        
+                        <div id="my-modal">
+                           <h5 style="font-weight: 600;color: #f7d800;">Đăng ký gói để hưởng những quyền lợi của VIP</h5>
+                           <p>Xem phim không giới hạn</p>
+                           <p>Xem nội dung sớm nhất và độc quyền</p>
+                           <p>Không quảng cáo</p>
+                           <p>Tùy chọn Phụ Đề/Lồng Tiếng/Thuyết Minh</p>
+
+                         </div>
+                     </div>
+
+                     @if(isset($yeuthich_list) && $yeuthich_list != null)
+                     <div id="get-bookmark" class="box-shadow" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-bookmark"></i><span> Bookmarks</span><span style="
+                        margin-left: 5px;
+                        background-color: red;
+                        padding: 2px 5px;
+                        border-radius: 50%;
+                    "><?php $n = 0; foreach($yeuthich_list as $key => $yeu){
+                       if($yeu->movie != null) 
+                           $n= $n +1;
+                        }
+                        echo $n;
+                     ?>
+                     </span></div>
+      
+                     <!-- Modal -->
+                     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                           <div class="modal-header" >
+                              <h4 class="modal-title" id="exampleModalLongTitle" style="text-align: center; font-weight: 600; color: red">Danh sách phim yêu thích</h4>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="font-size: 30px;position: absolute;top: 15px;right: 20px;">
+                              <span aria-hidden="true">&times;</span>
+                              </button>
+                           </div>
+                           <div class="modal-body">
+                              <ul>
+                                 
+                                    @foreach($yeuthich_list as $key => $yeu)
+                                       @if($yeu->movie != null)
+                                       <li style="cursor:pointer; list-style: none;" class="list-group-item link-class">
+                                          <a href="{{route('movie',$yeu->movie->slug)}}" style="display: flex; ">
+                                             <img src="{{$yeu->movie->image}}" style="margin-right: 20px; max-height: 180px;" />
+                                             <div style="text-align: justify; color: #0d0a76;">
+                                                <h4 style="font-weight: 600;">{{$yeu->movie->title}} | </h4>
+                                                {!! $yeu->movie->description !!}
+                                             </div>
+                                          </a>
+                                       </li>
+                                       @endif
+                                    @endforeach
+                          
+                              </ul>
+                           </div>
+                           <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary">Save changes</button>
+                           </div>
+                        </div>
+                        </div>
                   </div>
-               </div>
+                  @endif
+                  <div class="dropdown">
+                     <i class="fa fa-user"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="
+                     font-size: 24px;border: 3px solid white;padding: 3px 5px;color: white;border-radius: 50%;cursor: pointer;"></i>
+                     {{-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                       Dropdown button
+                     </button> --}}
+                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="
+                     width: 200px; margin-left: auto;padding: 12px 30px;">
+                       <a class="dropdown-item"  href="#" >Tài khoản của tôi</a> <br/>
+                       <a class="dropdown-item" href="#">Action</a> <br/>
+                       <form action="{{route('logout')}}" method="post">
+                        @csrf
+                        <i class="fa fa-sign-out"></i><input type="submit" value="Đăng xuất"style="
+                        border: none;
+                        background: none;
+                    "/>
+                      </form>
+                     </div>
+                   </div>
+               
+                  
             </div>
+            {{-- <div id="get-bookmark" class="box-shadow"><i class="hl-bookmark"></i><span> Bookmarks</span><span class="count">0</span></div> --}}
+            <div id="bookmark-list" class="hidden bookmark-list-on-pc">
+               <ul style="margin: 0;"></ul>
+            </div>
+         </div>
          </div>
       </header>
       <div class="navbar-container">
@@ -133,6 +255,7 @@
                            </ul>
                        
                         </li>
+                        
                      </ul>
                   </div>
                   {{-- <ul class="nav navbar-nav navbar-left" style="background:#000;">
@@ -160,11 +283,63 @@
       <footer id="footer" class="clearfix">
          <div class="container footer-columns">
             <div class="row container">
-               <div class="widget about col-xs-12 col-sm-4 col-md-4">
-                  <div class="footer-logo">
-                     <img class="img-responsive" src="https://img.favpng.com/9/23/19/movie-logo-png-favpng-nRr1DmYq3SNYSLN8571CHQTEG.jpg" alt="Phim hay 2021- Xem phim hay nhất" />
+               <div class="widget about col-xs-12 col-sm-4 col-md-3">
+                  <div class="footer-logo" style="margin-top: -5px;">
+                     <img class="img-responsive" src="https://phimmoiiii.net/wp-content/uploads/2023/03/phimmoi.png" alt="Phim hay 2021- Xem phim hay nhất" />
                   </div>
-                  Liên hệ QC: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e5958d8c888d849ccb868aa58288848c89cb868a88">[email&#160;protected]</a>
+                  
+                  <div>
+                     <a href="#" style="font-weight: 600;">Phimmoi</a> 
+                     <span> - Trang xem phim Online với giao diện mới được bố trí và thiết kế thân thiện với người dùng. Nguồn phim được tổng hợp từ các website lớn với đa dạng các đầu phim và thể loại vô cùng phong phú.</span>
+                  </div>
+               </div>
+               <div class="widget about col-xs-12 col-sm-4 col-md-3">
+                  <h4>Phim mới</h4>
+                  <a href="#">Phim Chiếu Rạp</a> <br>
+                  <a href="#">Phim Thuyết Minh</a> <br>
+                  <a href="#">Phim Hoạt Hình</a> <br>
+                  <a href="#">Phim Bộ</a> <br>
+                  <a href="#">Phim Lẻ</a> <br>
+               </div>
+               <div class="widget about col-xs-12 col-sm-4 col-md-3">
+                  <h4>Phim hay nhất</h4>
+                  <a href="#">Việt Nam</a> <br>
+                  <a href="#">Âu Mỹ</a> <br>
+                  <a href="#">Tây Ban Nha</a> <br>
+                  <a href="#">Trung Quốc</a> <br>
+                  <a href="#">Nhật Bản</a> <br>
+               </div>
+               <div class="widget about col-xs-12 col-sm-4 col-md-3">
+                  <h4>Thông tin</h4>
+                  <a href="#">Giới thiệu</a> <br>
+                  <a href="#">Liên hệ chúng tôi</a> <br>
+                  <a href="#">Điều khoản dịch vụ</a> <br>
+                  <a href="#">Chính sách riêng tư</a> <br>
+                  <a href="#">Khiếu nại bản quyền</a> <br>
+                  <a href="#" data-toggle="modal" data-target="#exampleModalCenter">Nâng cấp tài khoản</a>
+                   
+                   <!-- Modal -->
+                   <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                     <div class="modal-dialog modal-dialog-centered" role="document">
+                       <div class="modal-content">
+                         <div class="modal-header">
+                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                             <span aria-hidden="true">&times;</span>
+                           </button>
+                         </div>
+                         <div class="modal-body" style="color: #000">
+                           Bạn muốn gửi yêu cầu nâng cấp thành tài khoản Admin?
+                         </div>
+                         <div class="modal-footer">
+                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                           <form action="{{route('nangcap')}}" method="post">
+                              @csrf
+                              <button type="submit" class="btn btn-primary">Gửi</button>
+                           </form>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
                </div>
             </div>
          </div>
@@ -181,27 +356,28 @@
       <script type="text/javascript">
       $(document).ready(function(){
          $('#timkiem').keyup(function() {
-  $('#result').html('');
-  var search = $('#timkiem').val();
-  if (search != '') {
-    var expression = new RegExp(search, "i");
-    var existingMovies = []; // Khởi tạo mảng trống để lưu trữ tiêu đề phim hiện có
+         $('#result').html('');
+         var search = $('#timkiem').val();
+         if (search != '') {
+            var expression = new RegExp(search, "i");
+            var existingMovies = []; // Khởi tạo mảng trống để lưu trữ tiêu đề phim hiện có
 
-    $.getJSON('/json_file/movies.json', function(data) {
-      $.each(data, function(key, value) {
-        if (value.title.search(expression) != -1) {
-          if (existingMovies.indexOf(value.title) === -1) { // Kiểm tra xem tiêu đề phim đã có trong mảng chưa
-            $('#result').css('display', 'inherit');
-            $('#result').append('<li style="cursor:pointer;" class="list-group-item link-class"><img src="' + value.image + '" width="40" height="40" class="" />' + value.title + '<br> | <span class="text-muted">' + value.description + '</span></li>');
-            existingMovies.push(value.title); // Thêm tiêu đề phim vào mảng để tránh trùng lặp
-          }
-        }
-      });
-    });
-  } else {
-    $('#result').css('display', 'none');
-  }
-});
+            $.getJSON('/json_file/movies.json', function(data) {
+               $.each(data, function(key, value) {
+               if (value.title.search(expression) != -1) {
+                  if (existingMovies.indexOf(value.title) === -1) { // Kiểm tra xem tiêu đề phim đã có trong mảng chưa
+                     $('#result').css('display', 'inherit');
+                     existingMovies.push(value.title); // Thêm tiêu đề phim vào mảng để tránh trùng lặp
+                     $('#result').append('<li style="cursor:pointer; display:flex;" class="list-group-item link-class"><img src="' + value.image + '" style="margin-right: 20px; max-width=60px; max-height: 60px;" /><div><div>'+ value.title + ' | </div><span class="text-muted">' + value.description + '</span></div></li>');
+                  }
+                  }
+                  });
+               });
+               } else {
+                  $('#result').css('display', 'none');
+               }
+            }
+         );
 
 
 
@@ -211,7 +387,7 @@
             $('#result').html('');
             $('#result').css('display','none');
          });
-      })
+      });
       </script>
       <script type='text/javascript'>
       $(".watch_trailer").click(function(e){
@@ -223,8 +399,9 @@
      
       <script type='text/javascript'>
       $(document).ready(function(){
+         
          $.ajax({
-            url:"{{url('/filter-topview-default')}}",
+            url:"{{route('filter-topview-default')}}",
             method:"GET",
             success:function(data)
             {
@@ -243,7 +420,7 @@
                var value = 3;
             }
             $.ajax({
-               url:"{{url('/filter-topview-phim')}}",
+               url:"{{route('filter-topview-phim')}}",
                method:"POST",
                data:{value:value},
                headers: {

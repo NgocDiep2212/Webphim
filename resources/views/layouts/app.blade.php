@@ -103,59 +103,50 @@
                   $segment = Request::segment(1);
                 @endphp
 
-                <li class="treeview {{($segment == 'category' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'nhanvien' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-folder-open" aria-hidden="true"></i>
-                    <span>Danh mục phim</span>
+                    <span>Nhân viên</span>
                     <i class="fa fa-angle-left pull-right"></i>
                   </a>
                   <ul class="treeview-menu">
                     <li>
-                      <a href="{{route('category.create')}}"
-                        ><i class="fa fa-angle-right"></i>Thêm Danh Mục</a
+                      <a href="{{route('nhanvien.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Nhân Viên</a
                       >
                     </li>
                     <li>
-                      <a href="{{route('category.index')}}"
-                        ><i class="fa fa-angle-right"></i>Liệt Kê Danh Mục</a
+                      <a href="{{route('nhanvien.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Nhân Viên</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('lichsu-nv')}}"
+                        ><i class="fa fa-angle-right"></i>Lịch sử</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('xoa-nv')}}"
+                        ><i class="fa fa-angle-right"></i>Tài khoản nhân viên bị khóa</a
                       >
                     </li>
                   </ul>
                 </li>
-                <li class="treeview {{($segment == 'genre' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'khachhang' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-folder-o" aria-hidden="true"></i>
-                    <span>Thể loại phim</span>
+                    <span>Khách Hàng</span>
                     <i class="fa fa-angle-left pull-right"></i>
                   </a>
                   <ul class="treeview-menu">
                     <li>
-                      <a href="{{route('genre.create')}}"
-                        ><i class="fa fa-angle-right"></i>Thêm Thể loại</a
+                      <a href="{{route('khachhang.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Khách Hàng</a
                       >
                     </li>
                     <li>
-                      <a href="{{route('genre.index')}}"
-                        ><i class="fa fa-angle-right"></i>Liệt Kê Thể Loại</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li class="treeview {{($segment == 'country' ? 'active' : '')}}">
-                  <a href="#">
-                    <i class="fa fa-globe" aria-hidden="true"></i>
-                    <span>Quốc Gia phim</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </a>
-                  <ul class="treeview-menu">
-                    <li>
-                      <a href="{{route('country.create')}}"
-                        ><i class="fa fa-angle-right"></i>Thêm Quốc Gia</a
-                      >
-                    </li>
-                    <li>
-                      <a href="{{route('country.index')}}"
-                        ><i class="fa fa-angle-right"></i>Liệt Kê Quốc Gia</a
+                      <a href="{{route('khachhang.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Khách Hàng</a
                       >
                     </li>
                   </ul>
@@ -163,39 +154,51 @@
                 <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-film" aria-hidden="true"></i>
-                    <span>Phim</span>
+                    <span>Quản lý Gói VIP</span>
                     <i class="fa fa-angle-left pull-right"></i>
                   </a>
                   <ul class="treeview-menu">
                     <li>
-                      <a href="{{route('movie.create')}}"
-                        ><i class="fa fa-angle-right"></i>Thêm Phim</a>
-                    </li>
-                    <li>
-                      <a href="{{route('movie.index')}}"
-                        ><i class="fa fa-angle-right"></i>Liệt Kê Phim</a>
-                    </li>
-                    <li>
-                      <a href="{{route('leech-movie')}}"
-                        ><i class="fa fa-angle-right"></i>Leech Phim</a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="treeview {{($segment == 'linkmovie' ? 'active' : '')}}">
-                  <a href="#">
-                    <i class="fa fa-film" aria-hidden="true"></i>
-                    <span>Link Phim</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </a>
-                  <ul class="treeview-menu">
-                    <li>
-                      <a href="{{route('linkmovie.create')}}"
-                        ><i class="fa fa-angle-right"></i>Thêm Link Phim</a
+                      <a href="{{route('goivip.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt kê gói VIP</a
                       >
                     </li>
                     <li>
-                      <a href="{{route('linkmovie.index')}}"
-                        ><i class="fa fa-angle-right"></i>Liệt Kê Link Phim</a
+                      <a href="{{route('goivip.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm gói VIP</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="treeview {{($segment == 'country' ? 'active' : '')}}">
+                  <a href="{{route('yeucau')}}">
+                    <i class="fa fa-globe" aria-hidden="true"></i>
+                    <span>Duyệt Yêu Cầu</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                </li>
+                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                  <a href="#">
+                    <i class="fa fa-film" aria-hidden="true"></i>
+                    <span>Thống Kê</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                </li>
+                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                  <a href="#">
+                    <i class="fa fa-film" aria-hidden="true"></i>
+                    <span>Lịch Sử Quản Lý Phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('lichsu-themphim')}}"
+                        ><i class="fa fa-angle-right"></i>Lịch Sử Thêm Phim</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('lichsu-duyetmovie')}}"
+                        ><i class="fa fa-angle-right"></i>Lịch Sử Duyệt Phim</a
                       >
                     </li>
                   </ul>
@@ -471,8 +474,10 @@
                       ><img src="images/2.jpg" alt="" />
                     </span>
                     <div class="user-name">
-                      <p>Admin Name</p>
-                      <span>Administrator</span>
+                      @php $user = Auth::guard('admin')->user(); 
+                        echo '<p>'.$user->name.'</p>
+                        <span>'.$user->role['name'].'</span>';
+                      @endphp
                     </div>
                     <i class="fa fa-angle-down lnr"></i>
                     <i class="fa fa-angle-up lnr"></i>

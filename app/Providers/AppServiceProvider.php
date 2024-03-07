@@ -33,6 +33,13 @@ class AppServiceProvider extends ServiceProvider
     
     public function boot()
     {
+        $phimhot = Movie::withCount('episode')->where('phim_hot',1)->where('status',1)->where('duyet',1)->orderBy('updated','DESC')->get();
+        // phim sap chieu
+        $phimhot_trailer = Movie::where('resolution',5)->where('status',1)->where('duyet',1)->orderBy('updated','DESC')->take('5')->get();
+        $phimhot_sidebar = Movie::where('phim_hot',1)->where('status',1)->where('duyet',1)->orderBy('updated','DESC')->take('8')->get();
+        $genre = Genre::orderBy('id','DESC')->where('status',1)->get();
+        $category = Category::orderBy('id','DESC')->where('status',1)->get();
+        $country = Country::orderBy('id','DESC')->where('status',1)->get();
         // $phimhot_sidebar = Movie::where('phim_hot',1)->where('status',1)->orderBy('updated','DESC')->take(30)-get();
         // $phimhot_sidebar = Movie::where('resolution',5)->where('status',1)->orderBy('updated','DESC')->take(10)-get();
         // $category = Category::orderBy('position','ASC')->where('status',1)->get();
@@ -44,7 +51,6 @@ class AppServiceProvider extends ServiceProvider
         $genre_total = Genre::all()->count();
         $country_total = Country::all()->count();
         $movie_total = Movie::all()->count();
-
         //tracking user activity
         // $total_users = DB::table('tracker_sessions')->count();
         // $total_users_week = DB::table('tracker_sessions')->where('created_at','>=', Carbon::now('Asia/Ho_Chi_Minh')->subDays(7))->count();
@@ -60,7 +66,12 @@ class AppServiceProvider extends ServiceProvider
             // 'total_users_3months' => $total_users_3months,
             // 'total_users_thisyear' => $total_users_thisyear,
             // 'info'=>$info,
-
+            'phimhot' => $phimhot,
+            'phimhot_trailer' => $phimhot_trailer,
+            'phimhot_sidebar' => $phimhot_sidebar,
+            'genre' => $genre,
+            'category' => $category,
+            'country' => $country,
             'category_total' => $category_total,
             'genre_total' => $genre_total,
             'country_total' => $country_total,
