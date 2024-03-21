@@ -56,6 +56,7 @@ Route::middleware('auth:admin')->group(function (){
     Route::get('/leech-episode-store/{slug}', [LeechMovieController::class,'leech_episode_store'])->name('leech-episode-store');
     Route::get('/leech-episode-single-store', [LeechMovieController::class,'leech_episode_single_store'])->name('leech-episode-single-store');
     Route::get('/leech-episode-single-delete', [LeechMovieController::class,'leech_episode_single_delete'])->name('leech-episode-single-delete');
+    Route::get('/refresh-json', [LeechMovieController::class,'saveJsonToFile'])->name('refresh-json');
 
 
     // add admin

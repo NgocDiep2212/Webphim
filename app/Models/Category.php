@@ -15,9 +15,12 @@ class Category extends Model
     //     return $this->hasMany(Movie::class)->orderBy('id','DESC');
         
     // }
-    public function movie(){
-        return $this->belongsToMany(Movie::class, 'movie_category', 'movie_id', 'category_id');
+    // public function movie(){
+    //     return $this->belongsToMany(Movie::class, 'movie_category', 'movie_id', 'category_id');
         
+    // }
+    public function movie(){
+        return $this->belongsTo(Movie::class, 'movie_category', 'movie_id', 'category_id');    
     }
     //ep
     // public function server(){

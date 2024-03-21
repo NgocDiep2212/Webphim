@@ -18,6 +18,7 @@ use App\Models\Chitiet_Themphim;
 use Carbon\Carbon;
 use DB;
 use File;
+use Exception;
 class LeechMovieController extends Controller
 {
     /**
@@ -26,28 +27,77 @@ class LeechMovieController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function leech_movie(){
+     public function saveJsonToFile() {
         
+
+        $destinationPath=public_path()."/json_file/";
+        if(!is_dir($destinationPath)){
+            //tao va cap quyen them sua xoa
+            mkdir($destinationPath,0777,true);
+        }
+        
+        $data_new = [];
+        ini_set('max_execution_time', 300);
         try {
             $client = new Client([
                 'verify' => false
             ]);
-            if(isset($_GET['page'])){
-                $page = $_GET['page'];
+        
+            for($i = 1; $i<= 30; $i++){
+                
+                $data = $client->get('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page='.$i)->getBody()->getContents();
+                $json = json_decode($data,true);
+                $data_new = array_merge_recursive($data_new, $json);
             }
-            if(!isset($page)){
-                $page=1;
-            }
-    
-            $data = $client->get('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page='.$page)->getBody()->getContents();
-            
-            $resp = json_decode($data);
-            $totalPage = $resp->pagination->totalPages;
-    
-            return view('admincp.addAdmin.leech.index',compact('resp','totalPage','page'));
+
         } catch (Exception $e) {
             echo $e;
         }
+        $filePath = $destinationPath . 'movies_leech.json';
+        if (file_exists($filePath)) {
+            // Delete existing file to prevent duplicates
+            unlink($filePath);
+        }
+        File::put($destinationPath.'movies_leech.json',json_encode($data_new));
+        return redirect()->back();
+        
+      }
+      
+
+    // public function leech_movie(){
+        
+    //     try {
+    //         $client = new Client([
+    //             'verify' => false
+    //         ]);
+    //         if(isset($_GET['page'])){
+    //             $page = $_GET['page'];
+    //         }
+    //         if(!isset($page)){
+    //             $page=1;
+    //         }
+    
+    //         $data = $client->get('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page='.$page)->getBody()->getContents();
+            
+    //         $resp = json_decode($data);
+    //         $totalPage = $resp->pagination->totalPages;
+    
+    //         return view('admincp.addAdmin.leech.index',compact('resp','totalPage','page'));
+    //     } catch (Exception $e) {
+    //         echo $e;
+    //     }
+    // }
+    public function leech_movie(){
+
+        //$this->saveJsonToFile();
+        $destinationPath = public_path() . "/json_file/";
+        $filePath = $destinationPath . 'movies_leech.json';
+        $datas = file_get_contents($filePath);
+        $datas = json_decode($datas,true);
+        //return $datas;
+       
+        return view('admincp.addAdmin.leech.index',compact('datas'));
+       
     }
 
     public function leeched_movie(){
