@@ -9,6 +9,7 @@
         <th scope="col">Email</th>
         <th scope="col">Tạo vào lúc</th>
         <th scope="col">Cập nhật vào lúc</th>
+        <th scope="col">VIP</th>
         <th scope="col">Manage</th>
       </tr>
     </thead>
@@ -20,6 +21,12 @@
         <td>{{$cate->email}}</td>
         <td>{{$cate->created_at}}</td>
         <td>{{$cate->updated_at}}</td>
+        <td>
+          @if(isset($cate->chuaDenHan)) VIP
+          @endif
+          {{-- @if(isset($cate->hoadon) && $cate->hoadon->expired_at >= $c) VIP
+          @endif --}}
+        </td>
         <td>
             {!! Form::open([
                 'method' => 'DELETE',

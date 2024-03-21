@@ -31,5 +31,9 @@ class Admin extends Authenticatable
     public function nguoiThemPhim(){
         return $this->belongsTo(Chitiet_ThemPhim::class, 'id', 'admin_id');
     }
+    public function is_admin()
+    {
+        return true;
+    }
 }
 

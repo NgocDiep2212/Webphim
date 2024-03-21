@@ -10,6 +10,7 @@ use App\Models\Admin;
 use App\Models\User;
 use App\Models\Role;
 use Carbon\Carbon;
+use Mail;
 
 class YeuCauController extends Controller
 {
@@ -34,7 +35,7 @@ class YeuCauController extends Controller
         $admin->name = $user->name;
         $admin->email = $user->email;
         $admin->password = $user->password;
-        $admin->id_role = $data['role_id'];
+        $admin->id_role = $data['role'];
         $admin->created_at = Carbon::now('Asia/Ho_Chi_Minh');
         $admin->updated_at = Carbon::now('Asia/Ho_Chi_Minh');
         
@@ -46,7 +47,7 @@ class YeuCauController extends Controller
         $ct->id_nhanvien = $user->id;
         $ct->name_nhanvien = $user->name;
         $ct->email_nhanvien = $user->email;
-        $ct->cv_nhanvien = $data['role_id'];
+        $ct->cv_nhanvien = $data['role'];
         $ct->created_at = Carbon::now('Asia/Ho_Chi_Minh');
         $ct->status = 0;
 
@@ -56,8 +57,17 @@ class YeuCauController extends Controller
         $admin->save();
         $ct->save();
         $yc->save();
-
+        //return $admin->id_role;
+        $this->testEmail($admin->name, $admin->role->name, $admin->email);
         return redirect()->back();
+    }
+
+    
+    public function testEmail($name, $role, $e){
+        Mail::send('pages.email', compact('name', 'role'), function ($email) use ($e) {
+            $email->to($e)->subject('Thư thông báo');
+        });
+        
     }
 
     public function deny(Request $request){

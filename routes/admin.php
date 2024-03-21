@@ -24,7 +24,7 @@ Route::match(['get', 'post'], '/login', [LoginController::class, 'login'])->name
 Route::middleware('auth:admin')->group(function (){
   
     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
-    Route::get('/home',[HomeController::class, 'index'])->name('home');
+    Route::get('/home',[HomeController::class,'index'])->name('home');
     //route admin
     //trong resource chua: get, post,...
     Route::resource('/category', CategoryController::class);
@@ -42,8 +42,9 @@ Route::middleware('auth:admin')->group(function (){
     Route::get('/update-top-view', [MovieController::class,'update_topview'])->name('update-top-view');
     Route::get('/update-season-phim', [MovieController::class,'update_season'])->name('update-season-phim');
     Route::get('/update-year-phim', [MovieController::class,'update_year'])->name('update-year-phim');
+    Route::get('/update-vip', [MovieController::class,'update_vip'])->name('update-vip');
+    Route::get('/test', [HomeController::class,'test'])->name('test');
     
-
 
     //route leech movie
     Route::get('/leech-movie', [LeechMovieController::class,'leech_movie'])->name('leech-movie');
@@ -52,7 +53,9 @@ Route::middleware('auth:admin')->group(function (){
     Route::get('/leech-detail/{slug}', [LeechMovieController::class,'leech_detail'])->name('leech-detail');
     Route::get('/leech-episode/{slug}', [LeechMovieController::class,'leech_episode'])->name('leech-episode');
     Route::post('/leech-store/{slug}', [LeechMovieController::class,'leech_store'])->name('leech-store');
-    Route::post('/leech-episode-store/{slug}', [LeechMovieController::class,'leech_episode_store'])->name('leech-episode-store');
+    Route::get('/leech-episode-store/{slug}', [LeechMovieController::class,'leech_episode_store'])->name('leech-episode-store');
+    Route::get('/leech-episode-single-store', [LeechMovieController::class,'leech_episode_single_store'])->name('leech-episode-single-store');
+    Route::get('/leech-episode-single-delete', [LeechMovieController::class,'leech_episode_single_delete'])->name('leech-episode-single-delete');
 
 
     // add admin
@@ -66,6 +69,7 @@ Route::middleware('auth:admin')->group(function (){
     //admin
     Route::resource('/nhanvien', NhanVienController::class);
     Route::resource('/khachhang', KhachHangController::class);
+    Route::get('/khachvip',[KhachHangController::class, 'khachvip'])->name('khachvip');
     Route::resource('/goivip', GoiVipController::class);
     Route::get('/lichsu-nv',[NhanVienController::class, 'lichsu'])->name('lichsu-nv');
     Route::get('/lichsu-themphim',[HomeController::class, 'lichsu_themphim'])->name('lichsu-themphim');
@@ -75,7 +79,10 @@ Route::middleware('auth:admin')->group(function (){
     Route::get('/yeucau',[YeuCauController::class, 'index'])->name('yeucau');
     Route::post('/yeucau-accept',[YeuCauController::class, 'accept'])->name('yeucau-accept');
     Route::post('/yeucau-deny',[YeuCauController::class, 'deny'])->name('yeucau-deny');
-
+    Route::get('/thongke',[HomeController::class, 'chart'])->name('thongke');
+    Route::get('/get-month-views',[HomeController::class, 'getMonthViews'])->name('get-month-views');
+    Route::get('/get-month-sales',[HomeController::class, 'getMonthSales'])->name('get-month-sales');
+    
     //duyet admin
     Route::get('/duyet-phim',[DuyetController::class, 'duyetphim'])->name('duyet-phim');
     // Route::get('/duyet-ct/{id}',[DuyetController::class, 'duyet_ct'])->name('duyet-ct');

@@ -34,27 +34,33 @@ class DuyetController extends Controller
     {
         //asc: số 0 đi đầu, desc: cuối đi đầu
         $movie = Movie::where('slug',$slug)->first();
-        //lay tap 
-        if(isset($tap)){
-            $tapphim = $tap;
-            $tapphim = substr($tap,4,20);
-            $server = substr($server_active, -1);
-            $episode = Episode::where('movie_id',$movie->id)->where('episode',$tapphim)->first(); 
+        $ep = Episode::where('movie_id',$movie->id)->count();
+        if($ep == 0){
+            echo 'Chưa thêm tập phim';
         }else{
-            $tapphim = 1;
-            $episode = Episode::where('movie_id',$movie->id)->where('episode',$tapphim)->first(); 
-            if(!isset($episode)){
-                $episode = Episode::where('movie_id',$movie->id)->first(); 
+            //lay tap 
+            if(isset($tap)){
+                $tapphim = $tap;
+                $tapphim = substr($tap,4,20);
+                $server = substr($server_active, -1);
+                $episode = Episode::where('movie_id',$movie->id)->where('episode',$tapphim)->first(); 
+            }else{
+                $tapphim = 1;
+                $episode = Episode::where('movie_id',$movie->id)->where('episode',$tapphim)->first(); 
+                if(!isset($episode)){
+                    $episode = Episode::where('movie_id',$movie->id)->first(); 
+                }
             }
-        }
+    
+            // $first_ep = Episode::where('movie_id',$id)->first();
+            $server = LinkMovie::with('sodes')->orderBy('id','DESC')->get();
+            $episode_movie = Episode::where('movie_id',$movie->id)->orderBy('episode','ASC')->get()->unique('server');
+            $episode_link = Episode_Server::where('episode_id', $episode->id)->first();
+            $episode_list = Episode::where('movie_id',$movie->id)->orderBy('episode','ASC')->get();
+            return view('admincp.duyetAdmin.duyetphim.chitietphim',compact('movie','episode','server','episode_movie','episode_link','episode_list'));
+            //return $movie;
 
-        // $first_ep = Episode::where('movie_id',$id)->first();
-        $server = LinkMovie::with('sodes')->orderBy('id','DESC')->get();
-        $episode_movie = Episode::where('movie_id',$movie->id)->orderBy('episode','ASC')->get()->unique('server');
-        $episode_link = Episode_Server::where('episode_id', $episode->id)->first();
-        $episode_list = Episode::where('movie_id',$movie->id)->orderBy('episode','ASC')->get();
-        return view('admincp.duyetAdmin.duyetphim.chitietphim',compact('movie','episode','server','episode_movie','episode_link','episode_list'));
-        //return $movie;
+        }
     }
     public function duyetphim()
     {

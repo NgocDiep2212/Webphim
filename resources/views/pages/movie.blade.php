@@ -52,7 +52,13 @@
                         @if(isset($movie->episode))
                         <div class="bwa-content">
                            <div class="loader"></div>
-                           <a href="{{url('xem-phim/'.$movie->slug.'/tap-'.$episode_first->episode.'/server-'.$episode_first->episode_server->server_id)}}" class="bwac-btn">
+                           @if($movie->vip == 1)
+                              @if(isset($user->chuaDenHan)) <a href="{{url('xem-phim/'.$movie->slug.'/tap-'.$episode_first->episode.'/server-'.$episode_first->episode_server->server_id)}}" class="bwac-btn">
+                              @else <a href="#" class="bwac-btn" data-toggle="modal" data-target="#exampleModalCenter">
+                              @endif
+                           @else <a href="{{url('xem-phim/'.$movie->slug.'/tap-'.$episode_first->episode.'/server-'.$episode_first->episode_server->server_id)}}" class="bwac-btn">
+                           @endif
+                           
                            <i class="fa fa-play"></i>
                            </a>
                         </div>
@@ -60,9 +66,30 @@
                      @else
                         <a href="#watch_trailer" style="display: block" class="btn btn-primary watch_trailer">Xem Trailer</a>
                      @endif
+                  
+                  <!-- Modal -->
+                  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                     <div class="modal-dialog modal-dialog-centered" role="document">
+                     <div class="modal-content">
+                        <div class="modal-body" style="text-align: center">
+                           Đăng ký gói VIP để xem phim ngay
+                           <a href="{{route('muagoi')}}" class="btn btn-warning" >Đăng ký</a>
+                        </div>
+                        <div class="modal-footer">
+                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                     </div>
+                     </div>
+                  </div>
                   </div>
                    <div class="film-poster col-md-9">
-                      <h1 class="movie-title title-1" style="display:block;line-height:35px;margin-bottom: -14px;color: #ffed4d;text-transform: uppercase;font-size: 18px;">{{$movie->title}}</h1>
+                     <div style="display: flex">
+                        <h1 class="movie-title title-1" style="display:block;line-height:35px;margin-bottom: -14px;color: #ffed4d;text-transform: uppercase;font-size: 18px;">{{$movie->title}}</h1> 
+                        @if($movie->vip == 1)
+                        <img src="https://illustoon.com/photo/dl/12321.png" alt="" style="max-width: 40px; filter: brightness(2);">
+                        @endif
+                     </div> 
+                     
                       <h2 class="movie-title title-2" style="font-size: 12px;">{{$movie->name_eng}}</h2>
                       <ul class="list-info-group">
                          <li class="list-info-group-item"><span>Trạng Thái</span> : <span class="quality">

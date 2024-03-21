@@ -30,6 +30,7 @@
                     <th scope="col">Năm phim</th>
                     {{-- <th scope="col">Season</th> --}}
                     <th scope="col">Top views</th>
+                    <th scope="col">Phim VIP</th>
                     <th scope="col">Quản lý</th>
                   </tr>
                 </thead>
@@ -126,6 +127,9 @@
                     </td> --}}
                     <td>
                       {!! Form::select('topview', [ '1' => 'Ngày', '2' => 'Tuần', '3' => 'Tháng'],isset($cate->topview) ? $cate->topview : '', ['class'=>'select-topview','id'=>$cate->id, 'placeholder'=>"--Views--"]) !!}
+                    </td>
+                    <td>
+                      {!! Form::select('vip', [ '0' => 'Không', '1' => 'VIP'],isset($cate->vip) ? $cate->vip : '', ['class'=>'select-vip','id'=>$cate->id, 'placeholder'=>"--Chọn--"]) !!}
                     </td>
                     <td>
                         {!! Form::open([

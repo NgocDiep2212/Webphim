@@ -80,6 +80,8 @@
                           <input type="submit" class="btn btn-primary" value="Chi tiết phim">
                         </form> --}}
                         <a class="btn btn-primary" href="{{route('duyet-ct', $cate->slug)}}">Chi tiết phim</a>
+                        <a class="btn btn-success" href="{{route('duyet-accept', $cate->slug)}}">Duyệt phim</a>
+                        <a class="btn btn-danger" href="{{route('duyet-cancel', $cate->slug)}}">Loại phim</a>
                     </td>
                   </tr>
                     @endforeach 

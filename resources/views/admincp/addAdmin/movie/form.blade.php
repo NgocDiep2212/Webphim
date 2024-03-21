@@ -71,6 +71,10 @@
                             {!! Form::textarea('description', isset($movie) ? $movie->description : '', ['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...','id'=>'description', 'required'=>'required']) !!}
                         </div>
                         <div class="form-group">
+                            {!! Form::label('actors', 'Diễn viên', []) !!}
+                            {!! Form::textarea('actors', isset($movie) ? $movie->actors : '',['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...', 'required'=>'required']) !!}
+                        </div>
+                        <div class="form-group">
                             {!! Form::label('tags', 'Từ khóa phim', []) !!}
                             {!! Form::textarea('tags', isset($movie) ? $movie->tags : '', ['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...', 'required'=>'required']) !!}
                         </div>
@@ -111,15 +115,26 @@
                             {!! Form::label('Hot', 'Hot', []) !!}
                             {!! Form::select('phim_hot', ['1'=>'Có', '0' => 'Không'], isset($movie) ? $movie->phim_hot : '', ['class'=>'form-control']) !!}
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             {!! Form::label('image', 'Image', []) !!}
                             {!! Form::text('image', isset($movie) ? $movie->image : '',['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...', 'required'=>'required']) !!}
                             
                         </div>
-                      
+                       --}}
+                       <div class="form-group">
+                        {!! Form::label('image', 'Image', []) !!}
+                        {!! Form::file('image',['class'=>'form-control-file']) !!}
+                        @if(isset($movie))
+                            <img width="20%" src="{{asset('uploads/movie/'.$movie->image)}}" alt="">
+                        @endif
+                    </div>
                         <div class="form-group">
                             {!! Form::label('status', 'Trạng thái', []) !!}
                             {!! Form::select('status', ['1'=>'Hiển thị', '0' => 'Không'], isset($movie) ? $movie->status : '', ['class'=>'form-control']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('vip', 'VIP', []) !!}
+                            {!! Form::select('vip', ['0' => 'Không','1'=>'VIP'], isset($movie) ? $movie->vip : '', ['class'=>'form-control']) !!}
                         </div>
                     @if(!isset($movie))
                         {!! Form::submit('Thêm dữ liệu', ['class'=>'btn btn-success']) !!}

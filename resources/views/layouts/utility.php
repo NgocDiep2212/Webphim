@@ -4,7 +4,7 @@ function pagination($number, $page){
     
     if($page > 1){
         echo ' <li class="page-item">
-        <a class="page-link" href="/project-php/public/page='.($page-1).'" tabindex="-1">Previous</a>
+        <a class="page-link" href="' . route('leech-movie', ['page' => $page - 1]) . '" tabindex="-1">Previous</a>
         </li>';
     }
                    
@@ -32,7 +32,7 @@ function pagination($number, $page){
 
     if($page < ($number)){
         echo '<li class="page-item">
-        <a class="page-link" href="' . route('leech-movie', ['page' => $i + 1]) . '" tabindex="-1">Next</a>
+        <a class="page-link" href="' . route('leech-movie', ['page' => $page + 1]) . '" tabindex="-1">Next</a>
         </li>';
     }
 

@@ -55,7 +55,8 @@ class EpisodeController extends Controller
         $id_ep = DB::connection()->getPdo()->lastInsertId();
         $episode_server = new Episode_Server();
         $episode_server->server_id = $data['linkserver'];
-        $episode_server->linkphim = '<iframe width="560" height="315" src="'.$data['linkphim'].'"  allowfullscreen></iframe>';
+        //$episode_server->linkphim = '<iframe width="560" height="315" src="'.$data['linkphim'].'"  allowfullscreen></iframe>';
+        $episode_server->linkphim = $data['linkphim'];
         $episode_server->episode_id = $id_ep;
         
        

@@ -17,6 +17,7 @@ use App\Models\Movie_Category;
 use App\Models\Chitiet_Themphim;
 use Carbon\Carbon;
 use DB;
+use File;
 class LeechMovieController extends Controller
 {
     /**
@@ -67,10 +68,74 @@ class LeechMovieController extends Controller
         // Decode the JSON string into an object
         $resp = json_decode($data);
         
-        return view('admincp.addAdmin.leech.leech_episode',compact('resp'));
+        return view('admincp.addAdmin.leech.leech_episode',compact('resp','slug'));
     }
 
-    public function leech_episode_store(Request $request, $slug){
+    public function leech_episode_single_store(Request $request){
+        $data = $request->all();
+        $slug = $data['slug'];
+        $tap = $data['tap'];
+        $movie = Movie::where('slug',$slug)->first();
+        if(!isset($movie)){
+            echo '<script>alert("Vui lòng thêm phim trước khi thêm tập phim")</script>';
+        }else{
+
+            $client = new Client([
+                'verify' => false
+            ]);
+            $data = $client->get('https://ophim1.com/phim/'.$slug)->getBody()->getContents();
+    
+            // Decode the JSON string into an object
+            $resp = json_decode($data);
+            foreach($resp->episodes as $episode ){
+                    
+                foreach($episode->server_data as $key_data => $server){
+                    if($server->name == $tap){
+    
+                        $ep = new Episode();
+                        $ep->movie_id = $movie->id;
+                        $ep->episode = $server->name;
+                        $ep->created_at = Carbon::now('Asia/Ho_Chi_Minh');
+                        $ep->updated_at = Carbon::now('Asia/Ho_Chi_Minh');
+                        $ep->save();
+        
+                        //server tap phim
+                        $linkmovie = $episode->server_name;
+                        $id_ep = DB::connection()->getPdo()->lastInsertId();
+                        
+                        $exist_server = LinkMovie::where('title',$linkmovie)->where('status',1)->first();
+                        $ids = $exist_server->pluck('id');
+                        // Đếm số lượng bản ghi
+                        $count = count($ids);
+                        if($count != 0){
+                            
+                            $episode_server = new Episode_Server();
+                            $episode_server->server_id = $exist_server->id;
+                            $episode_server->linkphim = '<iframe width="560" height="315" src="'.$server->link_embed.'"  allowfullscreen></iframe>';
+                            $episode_server->episode_id = $id_ep;
+                            
+                        }else{
+                            $new_server = new LinkMovie();
+                            $new_server->title = $linkmovie;
+                            $new_server->save();
+                            $id_server_new = DB::connection()->getPdo()->lastInsertId();
+        
+                            $episode_server = new Episode_Server();
+                            $episode_server->server_id = $id_server_new;
+                            $episode_server->episode_id = $id_ep;
+                            $episode_server->linkphim = '<iframe width="560" height="315" src="'.$server->link_embed.'"  allowfullscreen></iframe>';
+                        }
+                        $episode_server->save();
+                    }
+                }
+                
+            }
+            return redirect()->back();
+        }
+        
+    }
+
+    public function leech_episode_store($slug){
         $movie = Movie::where('slug',$slug)->first();
 
         $client = new Client([
@@ -83,40 +148,44 @@ class LeechMovieController extends Controller
         foreach($resp->episodes as $episode ){
                 
             foreach($episode->server_data as $key_data => $server){
-                $ep = new Episode();
-                $ep->movie_id = $movie->id;
-                $ep->episode = $server->name;
-                $ep->created_at = Carbon::now('Asia/Ho_Chi_Minh');
-                $ep->updated_at = Carbon::now('Asia/Ho_Chi_Minh');
-                $ep->save();
+                $movie_ep = Episode::where('movie_id',$movie->id)->where('episode', $server->name)->first();
+                if(!isset($movie_ep)){
 
-                //server tap phim
-                $linkmovie = $episode->server_name;
-                $id_ep = DB::connection()->getPdo()->lastInsertId();
-                
-                $exist_server = LinkMovie::where('title',$linkmovie)->where('status',1)->first();
-                $ids = $exist_server->pluck('id');
-                // Đếm số lượng bản ghi
-                $count = count($ids);
-                if($count != 0){
+                    $ep = new Episode();
+                    $ep->movie_id = $movie->id;
+                    $ep->episode = $server->name;
+                    $ep->created_at = Carbon::now('Asia/Ho_Chi_Minh');
+                    $ep->updated_at = Carbon::now('Asia/Ho_Chi_Minh');
+                    $ep->save();
+    
+                    //server tap phim
+                    $linkmovie = $episode->server_name;
+                    $id_ep = DB::connection()->getPdo()->lastInsertId();
                     
-                    $episode_server = new Episode_Server();
-                    $episode_server->server_id = $exist_server->id;
-                    $episode_server->linkphim = '<iframe width="560" height="315" src="'.$server->link_embed.'"  allowfullscreen></iframe>';
-                    $episode_server->episode_id = $id_ep;
-                    
-                }else{
-                    $new_server = new LinkMovie();
-                    $new_server->title = $linkmovie;
-                    $new_server->save();
-                    $id_server_new = DB::connection()->getPdo()->lastInsertId();
-
-                    $episode_server = new Episode_Server();
-                    $episode_server->server_id = $id_server_new;
-                    $episode_server->episode_id = $id_ep;
-                    $episode_server->linkphim = '<iframe width="560" height="315" src="'.$server->link_embed.'"  allowfullscreen></iframe>';
+                    $exist_server = LinkMovie::where('title',$linkmovie)->where('status',1)->first();
+                    $ids = $exist_server->pluck('id');
+                    // Đếm số lượng bản ghi
+                    $count = count($ids);
+                    if($count != 0){
+                        
+                        $episode_server = new Episode_Server();
+                        $episode_server->server_id = $exist_server->id;
+                        $episode_server->linkphim = '<iframe width="560" height="315" src="'.$server->link_embed.'"  allowfullscreen></iframe>';
+                        $episode_server->episode_id = $id_ep;
+                        
+                    }else{
+                        $new_server = new LinkMovie();
+                        $new_server->title = $linkmovie;
+                        $new_server->save();
+                        $id_server_new = DB::connection()->getPdo()->lastInsertId();
+    
+                        $episode_server = new Episode_Server();
+                        $episode_server->server_id = $id_server_new;
+                        $episode_server->episode_id = $id_ep;
+                        $episode_server->linkphim = '<iframe width="560" height="315" src="'.$server->link_embed.'"  allowfullscreen></iframe>';
+                    }
+                    $episode_server->save();
                 }
-                $episode_server->save();
             }
             
         }
@@ -160,7 +229,30 @@ class LeechMovieController extends Controller
             }else{
                 $movie->thuocphim = 'phimbo';
             }
-            $movie->image = $resp_movie->thumb_url;
+            // $movie->image = $resp_movie->thumb_url;
+
+            //image
+            try {
+                $response = $client->get($resp_movie->thumb_url);
+        
+                if ($response->getStatusCode() === 200) {
+                    $imageContent = $response->getBody()->getContents();
+                    $filename = uniqid() . '.jpg';  // Generate unique filename with .jpg extension
+                    $storagePath = public_path('uploads/movie/');
+        
+                    if (!File::exists($storagePath)) {
+                        // Create the directory if it doesn't exist
+                        File::makeDirectory($storagePath, 0755, true);  // Recommended permissions
+                    }
+        
+                    if (File::put($storagePath . $filename, $imageContent)) {
+                        $movie->image = $filename;  // Update movie object with saved image path
+                    } 
+                }
+            } catch (Exception $e) {
+                echo 'Lỗi lưu ảnh';
+            }
+
             $movie->trailer = $resp_movie->trailer_url;
             $movie->duration = $resp_movie->time;
             $movie->sotap = $resp_movie->episode_total;
@@ -269,7 +361,17 @@ class LeechMovieController extends Controller
             $ct_add->created_at = Carbon::now('Asia/Ho_Chi_Minh');
             $ct_add->updated_at = Carbon::now('Asia/Ho_Chi_Minh');
             $ct_add->save();
-        
+        $this->leech_episode_store($resp_movie->slug);
+        return redirect()->back();
+    }
+
+    public function leech_episode_single_delete(Request $request){
+        $data = $request->all();
+        $movie = Movie::where('slug',$data['slug'])->first();
+        $episode = Episode::where('movie_id',$movie->id)->where('episode',$data['tap'])->first();
+        $episode_server = Episode_Server::where('episode_id',$episode->id);
+        $episode->delete();
+        $episode_server->delete();
         return redirect()->back();
     }
 

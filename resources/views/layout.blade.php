@@ -106,8 +106,24 @@
 
                   <div class="col-md-4 hidden-xs" style="display: flex;">
                      <div style="relative">
-                      
-                        <a href="{{route('muagoi')}}" id="my-button" class="btn btn-warning">
+                      <?php 
+                           use Illuminate\Support\Facades\Auth;
+                           use App\Models\HoaDon;
+                           use Carbon\Carbon;
+                           $date_now = Carbon::now()->format('Y-m-d');
+                           $user_id = Auth::guard('web')->user()->id;
+                           $hoadon = HoaDon::where('user_id',$user_id)->orderBy('created_at','desc')->first();
+                           if(isset($hoadon)){
+                              if($hoadon->expired_at >= $date_now){
+                                 $expired = Carbon::parse($hoadon->expired_at);
+                                 $vip = true;
+                                 $time_expired = $expired->diffInDays($date_now);
+                              } 
+
+                           }
+                      ?>
+                      @if(!isset($vip))
+                        <a href="{{route('muagoi')}}" id="my-button" class="btn btn-warning" style="margin-right: 10px;">
                            Đăng ký gói
                         </a>
                         
@@ -120,6 +136,12 @@
 
                          </div>
                      </div>
+                     @else 
+                     <div class="btn btn-warning" style="margin-right: 10px;">
+                       {{-- {{$hoadon->goivip->name}} <br/> --}}
+                       {{$time_expired}} Ngày
+                     </div>
+                     @endif
 
                      @if(isset($yeuthich_list) && $yeuthich_list != null)
                      <div id="get-bookmark" class="box-shadow" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-bookmark"></i><span> Bookmarks</span><span style="

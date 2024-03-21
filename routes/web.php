@@ -10,17 +10,6 @@ use App\Http\Controllers\User\IndexController;
 use App\Http\Controllers\User\LogoutController;
 
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 // Tạo route để quên mật khẩu
 Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('/password/reset', [ForgotPasswordController::class, 'sendResetLinkEmail']);
@@ -61,11 +50,5 @@ Route::middleware('auth')->group(function (){
     Route::get('/thanh-toan-vnpay-success', [IndexController::class,'thanh_toan_vnpay_success'])->name('thanh-toan-vnpay-success');
     Route::get('/pay-success', [IndexController::class,'pay_success'])->name('pay-success');
     Route::post('/nangcap', [IndexController::class,'nangcap'])->name('nangcap');
+    Route::get('/related', [IndexController::class,'related_movie'])->name('related');
 });
-
-
-
-// //login by google account
-// Route::get('auth/google',[LoginGoogleController::class, 'redirectToGoogle'])->name('login-by-google');
-// Route::get('auth/google/callback',[LoginGoogleController::class, 'handleGoogleCallback']);
-// Route::get('logout-home',[LoginGoogleController::class, 'logout_home'])->name('logout-home');

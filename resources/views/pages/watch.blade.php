@@ -23,6 +23,7 @@
                }
             </style>
             <div class="iframe_phim">
+               
                {!! $episode->linkphim !!}
             </div>
              

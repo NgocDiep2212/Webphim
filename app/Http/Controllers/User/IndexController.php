@@ -22,6 +22,8 @@ use App\Models\GoiVip;
 use App\Models\HoaDon;
 use App\Models\YeuCau;
 
+use Algenza\Cosinesimilarity\Cosine;
+use Mail;
 use Carbon\Carbon;
 use DB;
 
@@ -30,13 +32,18 @@ class IndexController extends Controller
 
     public function home(){
         //nested trong laravel: noi cac bang
+        $user = Auth::guard('web')->user();
+        
+        $visitor = \Tracker::currentSession();
+        if($visitor) {
+            $visitor->user_id= Auth::user()->id;
+            $visitor->save();
+        }
+        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
         $category_home = Category::with(['movie' => function($q){
                                                         $q->withCount('episode');
                                                     }])->orderBy('id','DESC')->where('status',1)->get();
-        $user = Auth::guard('web')->user();
-        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
-        
-        return view('pages.home', compact('yeuthich_list','category_home'));
+        return view('pages.home', compact('category_home','yeuthich_list'));
     }
     public function category($slug){
         $cate_slug = Category::where('slug',$slug)->where('status',1)->first();
@@ -78,9 +85,10 @@ class IndexController extends Controller
         return view('pages.country', compact('count_slug','movie'));
     }
     public function movie($slug){
+       
         $movie = Movie::with('category','genre','country')->where('slug',$slug)->where('duyet',1)->where('status',1)->first();
         //lay tap phim dau tien
-        $episode_first = Episode::with('movie')->where('movie_id', $movie->id)->orderBy('episode','asc')->take('1')->first();
+        $episode_first = Episode::with('movie')->where('movie_id', $movie->id)->orderBy('episode','asc')->first();
         
         //order by random but not chứa phim có slug hiện tại, phim có thể bạn thích dựa vào cùng category
         $related = Movie::with('category','genre','country')->where('country_id',$movie->country->id)->orderBy(DB::raw('RAND()'))->whereNotIn('slug',[$slug])->where('status',1)->where('duyet',1)->get();
@@ -106,8 +114,9 @@ class IndexController extends Controller
 
         //yeuthich
         $user = Auth::guard('web')->user();
+        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
         $yeuthich = YeuThich::where('movie_id',$movie->id)->with('movie')->where('user_id',$user->id)->count();
-        return view('pages.movie',compact('yeuthich','rating','count_total','bl','movie','related','episode','episode_first','episode_current_list_count'));
+        return view('pages.movie',compact('user','yeuthich','yeuthich_list','rating','count_total','bl','movie','related','episode','episode_first','episode_current_list_count'));
     }
     public function watch($slug, $tap, $server_active){
         $movie = Movie::with('category','genre','movie_genre','country','episode')->where('slug',$slug)->where('duyet',1)->where('status',1)->first();
@@ -122,7 +131,6 @@ class IndexController extends Controller
             
         }else{
             $tapphim = 1;
-            
         }
         $ep = Episode::where('movie_id',$movie->id)->where('episode',$tapphim)->first(); 
         $episode = Episode_Server::where('episode_id',$ep->id)->where('server_id',$server)->first(); 
@@ -131,7 +139,9 @@ class IndexController extends Controller
         $episode_movie = Episode::where('movie_id',$movie->id)->orderBy('episode','ASC')->get()->unique('server');
         //$episode_link = Episode_Server::where('episode_id', $episode->id)->first();
         $episode_list = Episode::where('movie_id',$movie->id)->orderBy('episode','ASC')->get();
-        return view('pages.watch',compact('server_active','episode_list','episode_movie','server','movie','tapphim','episode','related')); 
+        $user = Auth::guard('web')->user();
+        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+        return view('pages.watch',compact('yeuthich_list','server_active','episode_list','episode_movie','server','movie','tapphim','episode','related')); 
     }
     public function episode(){
         return view('pages.episode');
@@ -455,6 +465,81 @@ class IndexController extends Controller
         $nc->save();
         return redirect()->back();
     }
+
+    public function related_movie(){
+        $rates = Rating::all();
+
+        $matrix = [];
+
+        foreach ($rates as $rate) {
+            $matrix[$rate->user_id][$rate->movie_id] = $rate->rate;
+        }
+        $e = $this->getRecommendation($matrix, 11);
+        return $e;
+    }
+
+    function getSimilarity($matrix, $item, $otherProduct)
+{
+	$vectorUser = array();
+	$vectorOtherUser = array();
+	$match = 0;
+	foreach ($matrix[$item] as $key => $value) {
+		if (array_key_exists($key, $matrix[$otherProduct])) {
+			$vectorUser[] = $value;
+			$vectorOtherUser[] = $matrix[$otherProduct][$key];
+			$match++;
+		} else {
+			$vectorUser[] = $value;
+			$vectorOtherUser[] = 0;
+		}
+	}
+
+	foreach ($matrix[$otherProduct] as $key => $value) {
+		if (array_key_exists($key, $matrix[$item])) { } else {
+			$vectorOtherUser[] = $value;
+			$vectorUser[] = 0;
+		}
+	}
+	$data =  Cosine::similarity($vectorUser, $vectorOtherUser);
+	if ($match == 0 || $temp < 0.5) {
+		return -1;
+	}
+
+	return $data;
+}
+
+function getRecommendation($matrix, $user)
+{
+	$total = array();
+	$simsums = array();
+	$ranks = array();
+	foreach ($matrix as $otherUser => $value) {
+		if ($otherUser != $user) {
+			$sim = $this->getSimilarity($matrix, $user, $otherUser);
+			// "Độ gần giống : " . $otherUser . " với " . $user . " là : " . $sim . "<br/>";
+			if ($sim == -1) continue;
+			foreach ($matrix[$otherUser] as $key => $value) {
+				if (!array_key_exists($key, $matrix[$user])) {
+                    if (!array_key_exists($key, $total)) {
+                        $total[$key] = 0;
+                    }
+                    $total[$key] += $matrix[$otherUser][$key] * $sim;
+
+                    if (!array_key_exists($key, $simsums)) {
+                        $simsums[$key] = 0;
+                    }
+                    $simsums[$key] += $sim;
+				}
+			}
+		}
+	}
+
+	foreach ($total as $key => $value) {
+		$ranks[$key] = $value / $simsums[$key];
+	}
+	array_multisort($ranks, SORT_DESC);
+	return $ranks;
+}
 
 
 

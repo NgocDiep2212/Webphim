@@ -43,10 +43,10 @@
                     <form action="{{route('yeucau-accept')}}" method="post">
                       @csrf
                       <input type="text" name="user_id" value="{{$cate->user_id}}" hidden>
-                      <select name="role_id">
+                      <select name="role">
                         <option value="">-------Chọn một chức vụ-------</option>
                           @foreach($list_role as $key => $role) 
-                          <option value="{{$role->id}}">{{$role->name}}</option>
+                          <option value="{{$role->role}}">{{$role->name}}</option>
                           @endforeach
                       </select>
                     </div>

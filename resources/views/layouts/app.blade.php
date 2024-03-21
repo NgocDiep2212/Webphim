@@ -18,6 +18,7 @@
     </script>
     <!-- Bootstrap Core CSS -->
     <link href="{{asset('backends/css/bootstrap.css')}}" rel="stylesheet" type="text/css" />
+    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"> --}}
     <!-- Custom CSS -->
     <link href="{{asset('backends/css/style.css')}}" rel="stylesheet" type="text/css" />
     <!-- font-awesome icons CSS -->
@@ -45,13 +46,33 @@
     />
     <!--//webfonts-->
     <!-- chart -->
-    <script src="{{asset('backends/js/Chart.js')}}"></script>
+    {{-- <script src="{{asset('backends/js/Chart.js')}}"></script> --}}
     <!-- //chart -->
     <!-- Metis Menu -->
     <script src="{{asset('backends/js/metisMenu.min.js')}}"></script>
     <script src="{{asset('backends/js/custom.js')}}"></script>
+    <script src="{{asset('js/thongke.js')}}"></script>
     <link href="{{asset('backends/css/custom.css')}}" rel="stylesheet" />
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <style>
+      .three-line-paragraph {
+        padding:20px;
+        border:2px solid #ccc;
+        background:#f1f1f1;
+      }
+      .text-three-line{
+        display: block;
+        display: -webkit-box;
+        height: 16px*1.3*3;
+        font-size: 16px;
+        line-height: 1.3;
+        -webkit-line-clamp: 5;  /* số dòng hiển thị */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top:10px;
+      }
+    </style>
   </head>
 
   <body class="cbp-spmenu-push">
@@ -79,7 +100,7 @@
                 <span class="icon-bar"></span>
               </button>
               <h1>
-                <a class="navbar-brand" href="{{url('/home')}}"
+                <a class="navbar-brand" href="{{route('home')}}"
                   ><span class="fa fa-area-chart"></span> QUẢN LÝ <span
                     class="dashboard_text"
                     >Web Phim</span
@@ -94,7 +115,7 @@
               <ul class="sidebar-menu">
                 <li class="header">Quản lý webphim</li>
                 <li class="treeview">
-                  <a href="{{url('/home')}}">
+                  <a href="{{route('home')}}">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                   </a>
                 </li>
@@ -149,6 +170,11 @@
                         ><i class="fa fa-angle-right"></i>Liệt Kê Khách Hàng</a
                       >
                     </li>
+                    <li>
+                      <a href="{{route('khachvip')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Khách Hàng VIP</a
+                      >
+                    </li>
                   </ul>
                 </li>
                 <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
@@ -178,7 +204,7 @@
                   </a>
                 </li>
                 <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
-                  <a href="#">
+                  <a href="{{route('thongke')}}">
                     <i class="fa fa-film" aria-hidden="true"></i>
                     <span>Thống Kê</span>
                     <i class="fa fa-angle-left pull-right"></i>
@@ -694,28 +720,6 @@
           }
   
       </script>
-      <script type="text/javascript">
-          $('.order_position').sortable({
-              placeholder: 'ui-state-highlight',
-              update: function(event,ui){
-                  var array_id = [];
-                  $('.order_position tr').each(function(){
-                      array_id.push($(this).attr('id'));
-                  })
-                  $.ajax({
-                      headers:{ //lay token, dinh danh du lieu 
-                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                      },
-                      url: "{{route('resorting')}}",
-                      method:"POST",
-                      data:{array_id:array_id},
-                      success: function(data){
-                          alert('Sắp xếp thứ tự thành công');
-                      }
-                  })
-              }
-          })    
-      </script>
 
       {{-- chon tap phim trong them tap phim --}}
       <script type="text/javascript">
@@ -728,8 +732,77 @@
                       success: function(data){
                           $('#show_movie').html(data);
                       }
-                  })
-          })
+                  });
+          });
       </script>
+      {{-- <script type="text/javascript">
+        $('#lineChartSelect').change(function(){
+            var thang = $(this).find(':selected').val();
+            $.ajax({
+                url:"{{route('get-month-views')}}",
+                method:"GET",
+                data:{thang:thang},
+                success:function(){
+                    alert('Thay đổi phim theo thang '+thang+' thành công!');
+                }
+            });
+        })
+    </script> --}}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      //Bar char
+    @if(isset($data_bar_char) && $data_bar_char != null)
+      const xValues = [
+          @foreach($data_bar_char as $key => $d)
+            "{{$d['title']}}",
+          @endforeach
+        ];
+        const yValues = [
+        @foreach($data_bar_char as $key => $d)
+          "{{$d['count_views']}}",
+        @endforeach
+      ];
+      topViewsChart(xValues,yValues);
+    @endif
+
+  //{{-- Line char views--}}
+  $('.viewsMonthSelect').change(function() {
+        var thang = $(this).find(':selected').val();
+        viewsMonthSelectChange(thang);
+      });
+  @if(isset($monthly_views) && $monthly_views != null)
+      const yValues_line = [
+        @foreach($monthly_views as $monthlyView)
+          "{{$monthlyView->total_views}}",
+        @endforeach
+      ];
+      const labels_line = [
+        @foreach($monthly_views as $monthlyView)
+          "{{$monthlyView->day}}",
+        @endforeach
+      ];
+      viewsMonthChart(labels_line,yValues_line);
+  @endif
+
+  //{{-- Line char sales--}}
+  $('.salesMonthSelect').change(function() {
+        var thang = $(this).find(':selected').val();
+        salesMonthSelectChange(thang);
+      });
+  @if(isset($monthly_sales) && $monthly_sales != null)
+      const yValues_line_sales = [
+        @foreach($monthly_sales as $monthlySales)
+          "{{$monthlySales->total_sales}}",
+        @endforeach
+      ];
+      const labels_line_sales = [
+        @foreach($monthly_sales as $monthlySales)
+          "{{$monthlySales->day}}",
+        @endforeach
+      ];
+      salesMonthChart(labels_line_sales,yValues_line_sales);
+  @endif
+    });
+  </script>
   </body>
 </html>

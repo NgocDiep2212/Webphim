@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Providers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Category;
@@ -9,8 +9,10 @@ use App\Models\Genre;
 use App\Models\Country;
 use App\Models\Movie;
 use App\Models\Episode;
+use App\Models\YeuThich;
 use App\Models\Movie_Genre;
 use Carbon\Carbon;
+
 use DB;
 
 class AppServiceProvider extends ServiceProvider

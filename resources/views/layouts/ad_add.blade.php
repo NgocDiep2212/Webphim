@@ -642,6 +642,29 @@
     <!-- //Bootstrap Core JavaScript -->
    
   <script type="text/javascript" src="dataTables.scrollingPagination.js"></script>
+  <script>
+     function ChangeToSlug() {
+            var slug;
+            slug = document.getElementById("slug").value;
+            slug = slug.toLowerCase();
+            slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+            slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+            slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+            slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+            slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+            slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+            slug = slug.replace(/đ/gi, 'd');
+            slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
+            slug = slug.replace(/ /gi, "-");
+            slug = slug.replace(/\-\-\-\-\-/gi, '-');
+            slug = slug.replace(/\-\-\-\-/gi, '-');
+            slug = slug.replace(/\-\-\-/gi, '-');
+            slug = slug.replace(/\-\-/gi, '-');
+            slug = '@' + slug + '@';
+            slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+            document.getElementById('convert_slug').value = slug;
+        };
+  </script>
   <script type="text/javascript">
     $(document).ready(function() {
         let table = new DataTable('#tablephim');
@@ -703,28 +726,29 @@
                 }
             });
         });
+        $('.select-vip').change(function() {
+            var vip = $(this).find(':selected').val();
+            var id_phim = $(this).attr('id');
+            var text;
+            if (vip == 0) {
+                text = 'Không VIP';
+            } else if (vip == 1) {
+                text = 'VIP';
+            } 
+            $.ajax({
+                url: "{{route('update-vip')}}",
+                method: "GET",
+                data: {
+                    vip: vip,
+                    id_phim: id_phim
+                },
+                success: function() {
+                    alert('Thay đổi phim ' + text + ' thành công!');
+                }
+            });
+        });
 
-        function ChangeToSlug() {
-            var slug;
-            slug = document.getElementById("slug").value;
-            slug = slug.toLowerCase();
-            slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
-            slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
-            slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
-            slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
-            slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
-            slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
-            slug = slug.replace(/đ/gi, 'd');
-            slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
-            slug = slug.replace(/ /gi, "-");
-            slug = slug.replace(/\-\-\-\-\-/gi, '-');
-            slug = slug.replace(/\-\-\-\-/gi, '-');
-            slug = slug.replace(/\-\-\-/gi, '-');
-            slug = slug.replace(/\-\-/gi, '-');
-            slug = '@' + slug + '@';
-            slug = slug.replace(/\@\-|\-\@|\@/gi, '');
-            document.getElementById('convert_slug').value = slug;
-        };
+       
 
         $('.order_position').sortable({
             placeholder: 'ui-state-highlight',

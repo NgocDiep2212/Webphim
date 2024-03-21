@@ -36,7 +36,16 @@
             <article class="col-md-3 col-sm-3 col-xs-6 thumb grid-item post-37606">
                <div class="halim-item">
                   <a class="halim-thumb" href="{{route('movie',$mov->slug)}}">
-                     <figure><img class="lazy img-responsive" src="{{$mov->image}}" alt="{{$mov->title}}" title="{{$mov->title}}"></figure>
+                     <figure>
+                        @php
+                        $image_check = substr($mov->image,0,5);
+                        @endphp
+                        @if($image_check =='https')
+                        <img class="lazy img-responsive" src="{{$mov->image}}" alt="{{$mov->title}}" title="{{$mov->title}}">
+                        @else
+                        <img class="lazy img-responsive" src="{{asset('uploads/movie/'.$mov->image)}}" alt="{{$mov->title}}" title="{{$mov->title}}">
+                        @endif
+                     </figure>
                      <span class="status">
                         @if($mov->resolution == 0) HD
                         @elseif($mov->resolution == 1) SD

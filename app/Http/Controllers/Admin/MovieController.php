@@ -70,6 +70,13 @@ class MovieController extends Controller
         $movie->update();
     }
 
+    public function update_vip(Request $request ){
+        $data = $request->all();
+        $movie = Movie::find($data['id_phim']);
+        $movie->vip = $data['vip'];
+        $movie->update();
+    }
+
     
 
     /**
@@ -112,9 +119,11 @@ class MovieController extends Controller
         $movie->year = $data['year'];
         $movie->description = $data['description'];
         $movie->status = $data['status'];
+        $movie->vip = $data['vip'];
+        $movie->actors = $data['actors'];
         // $movie->category_id = $data['category_id'];
         $movie->country_id = $data['country_id'];
-        $movie->image = $data['image'];
+        // $movie->image = $data['image'];
         $movie->count_views = rand(100, 99999);
         $movie->created = Carbon::now('Asia/Ho_Chi_Minh');
         $movie->updated = Carbon::now('Asia/Ho_Chi_Minh');
@@ -127,18 +136,18 @@ class MovieController extends Controller
             $movie->category_id = $gen[0];
         }
 
-        // //add image
-        // $get_image = $request->file('image');
+        //add image
+        $get_image = $request->file('image');
 
-        // //add image
-        // if($get_image){
-        //     $get_name_image = $get_image->getClientOriginalName(); // hinhanh.jpg
-        //     $name_image = current(explode('.',$get_name_image)); //hinhanh . jpg => hinhanh
-        //     $new_image = $name_image.rand(0,9999).'.'.$get_image->getClientOriginalExtension(); //hinhanh1234.jpg
-        //     $get_image->move('uploads/movie/',$new_image); //dua h.a vao path
-        //     $movie->image = $new_image;
+        //add image
+        if($get_image){
+            $get_name_image = $get_image->getClientOriginalName(); // hinhanh.jpg
+            $name_image = current(explode('.',$get_name_image)); //hinhanh . jpg => hinhanh
+            $new_image = $name_image.rand(0,9999).'.'.$get_image->getClientOriginalExtension(); //hinhanh1234.jpg
+            $get_image->move('uploads/movie/',$new_image); //dua h.a vao path
+            $movie->image = $new_image;
         
-        // }
+        }
         $movie->save();
         $id_mov = DB::connection()->getPdo()->lastInsertId();
         //them nhieu the loai cho phim

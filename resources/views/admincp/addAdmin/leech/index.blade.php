@@ -35,6 +35,7 @@
             @if(!$movie)
             <form action="{{route('leech-store',$res->slug)}}" method="post">
                 @csrf
+                <a href="{{route('leech-episode-store',[$res->slug])}}"></a>
                 <input type="submit" class="btn btn-success" value="Thêm Phim">
             </form>
             @else

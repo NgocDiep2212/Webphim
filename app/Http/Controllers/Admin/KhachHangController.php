@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Chitiet_PQ;
+use App\Models\HoaDon;
+
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use DB;
@@ -21,9 +23,18 @@ class KhachHangController extends Controller
     public function index()
     {
         //asc: số 0 đi đầu, desc: cuối đi đầu
+        $c = Carbon::now()->format('Y-m-d');
         $list = User::where('status',1)->orderBy('id','ASC')->get();
-        return view('admincp.admin.khachhang.index',compact('list'));
+        return view('admincp.admin.khachhang.index',compact('list','c'));
     }
+
+    public function khachvip()
+    {
+        $date_now = Carbon::now()->format('Y-m-d');
+        $list = HoaDon::get();
+        return view('admincp.admin.khachhang.khachvip',compact('list','date_now'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
