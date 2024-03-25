@@ -10,4 +10,10 @@ class Rating extends Model
     protected $table = 'ratings';
     public $timestamps = false;
     use HasFactory;
+    public function user(){
+        return $this->belongsTo(User::class,'user_id','id');
+    }
+    public function movie(){
+        return $this->belongsTo(Movie::class,'movie_id','id');
+    }
 }

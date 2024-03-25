@@ -149,6 +149,47 @@
                <h3 class="section-title"><span>CÓ THỂ BẠN MUỐN XEM</span></h3>
             </div>
             <div id="halim_related_movies-2" class="owl-carousel owl-theme related-film">
+            @if(is_array($related))
+              @foreach($related as $key => $hot)
+              @if(isset($hot[0]['slug']) )
+              <article class="thumb grid-item post-38498">
+                 <div class="halim-item">
+                    <a class="halim-thumb" href="{{route('movie',$hot[0]['slug'])}}" title="{{$hot[0]['title']}}">
+                       <figure>
+                        @php
+                           $image_check = substr($hot[0]['image'],0,5);
+                        @endphp
+                        @if($image_check =='https')
+                        <img class="lazy img-responsive" src="{{$hot[0]['image']}}" alt="{{$hot[0]['title']}}" title="{{$hot[0]['title']}}">
+                        @else
+                        <img class="lazy img-responsive" src="{{asset('uploads/movie/'.$hot[0]['image'])}}" alt="{{$hot[0]['title']}}" title="{{$hot[0]['title']}}">
+                        @endif
+                     </figure>
+                       <span class="episode"><i class="fa fa-play" aria-hidden="true"></i>
+                          @if($hot[0]['vietsub'] == 0) 
+                             Phụ đề
+                             @if ($hot[0]['season'] != 0) 
+                               - Season: {{$hot[0]['season']}}
+                             @endif
+                          @else Thuyết minh 
+                             @if ($hot[0]['season'] != 0) 
+                             - Season: {{$hot[0]['season']}}
+                             @endif
+                          @endif 
+                       </span> 
+                       <div class="icon_overlay"></div>
+                       <div class="halim-post-title-box">
+                          <div class="halim-post-title ">
+                             <p class="entry-title">{{$hot[0]['title']}}</p>
+                             <p class="original_title">{{$hot[0]['name_eng']}}</p>
+                          </div>
+                       </div>
+                    </a>
+                 </div>
+              </article>
+              @endif
+              @endforeach
+            @else
               @foreach($related as $key => $hot)
               <article class="thumb grid-item post-38498">
                  <div class="halim-item">
@@ -186,6 +227,7 @@
                  </div>
               </article>
               @endforeach
+            @endif
            </div>
            <script>
               $(document).ready(function($) {				

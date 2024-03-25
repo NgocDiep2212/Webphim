@@ -17,8 +17,8 @@
                       function hideURLbar() { window.scrollTo(0, 1); }
     </script>
     <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link href="{{asset('backends/css/bootstrap.css')}}" rel="stylesheet" type="text/css" />
-    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"> --}}
     <!-- Custom CSS -->
     <link href="{{asset('backends/css/style.css')}}" rel="stylesheet" type="text/css" />
     <!-- font-awesome icons CSS -->
@@ -121,7 +121,7 @@
                 </li>
                 @php
                   //127.0.0.1:8000/segment1/segment2/.../segmentn
-                  $segment = Request::segment(1);
+                  $segment = Request::segment(2);
                 @endphp
 
                 <li class="treeview {{($segment == 'nhanvien' ? 'active' : '')}}">
@@ -177,7 +177,7 @@
                     </li>
                   </ul>
                 </li>
-                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'goivip' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-film" aria-hidden="true"></i>
                     <span>Quản lý Gói VIP</span>
@@ -196,21 +196,21 @@
                     </li>
                   </ul>
                 </li>
-                <li class="treeview {{($segment == 'country' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'yeucau' ? 'active' : '')}}">
                   <a href="{{route('yeucau')}}">
                     <i class="fa fa-globe" aria-hidden="true"></i>
                     <span>Duyệt Yêu Cầu</span>
                     <i class="fa fa-angle-left pull-right"></i>
                   </a>
                 </li>
-                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'thongke' ? 'active' : '')}}">
                   <a href="{{route('thongke')}}">
                     <i class="fa fa-film" aria-hidden="true"></i>
                     <span>Thống Kê</span>
                     <i class="fa fa-angle-left pull-right"></i>
                   </a>
                 </li>
-                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'lichsu-themphim' || $segment == 'lichsu-duyetmovie' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-film" aria-hidden="true"></i>
                     <span>Lịch Sử Quản Lý Phim</span>

@@ -110,10 +110,10 @@
                 </li>
                 @php
                   //127.0.0.1:8000/segment1/segment2/.../segmentn
-                  $segment = Request::segment(1);
+                  $segment = Request::segment(2);
                 @endphp
 
-                <li class="treeview {{($segment == 'category' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'duyet-phim' ? 'active' : '')}}">
                   <a href="{{route('duyet-phim')}}">
                     <i class="fa fa-folder-open" aria-hidden="true"></i>
                     <span>Duyệt Phim</span>
@@ -132,7 +132,7 @@
                     </li>
                   </ul> --}}
                 </li>
-                <li class="treeview {{($segment == 'genre' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'lichsu-duyetphim' ? 'active' : '')}}">
                   <a href="{{route('lichsu-duyetphim')}}">
                     <i class="fa fa-folder-o" aria-hidden="true"></i>
                     <span>Lịch sử duyệt phim</span>

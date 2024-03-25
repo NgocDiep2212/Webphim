@@ -53,6 +53,7 @@ return [
         'logout',
         'script*',
         'images*',
+        '*.*'
     ],
 
     /*

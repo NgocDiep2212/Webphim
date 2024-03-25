@@ -15,7 +15,7 @@
     </thead>
     <tbody class="order_position">
         @foreach($list as $key => $cate)
-        @if($cate->nhanvien['status'] == 0 && $cate['status'] == 2)
+        @if(isset($cate->nhanvien) && $cate->nhanvien['status'] == 0 && $cate['status'] == 2)
       <tr id="{{$cate->id}}">
         <th scope="row">{{$key}}</th>
         <td>{{$cate->name_nhanvien}}</td>

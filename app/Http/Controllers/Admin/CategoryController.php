@@ -66,9 +66,9 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $category = Category::find($id);
+        $category_form = Category::find($id);
         $list = Category::orderBy('position','ASC')->get();
-        return view('admincp.addAdmin.category.form',compact('list','category'));
+        return view('admincp.addAdmin.category.form',compact('list','category_form'));
     }
 
     /**
