@@ -97,56 +97,66 @@
                      </a>
                   </div>
                   <div id="halim-advanced-widget-2-ajax-box" class="halim_box">
-                     @foreach($cate_home->movie->take(12) as $key => $mov)
-                     <article class="col-md-3 col-sm-3 col-xs-6 thumb grid-item post-37606">
-                        <div class="halim-item">
-                           <a class="halim-thumb" href="{{route('movie',$mov->slug)}}">
-                              <figure>
-                                 @php
-                                    $image_check = substr($mov->image,0,5);
-                                 @endphp
-                                 @if($image_check =='https')
-                                 <img class="lazy img-responsive" src="{{$mov->image}}" alt="{{$mov->title}}" title="{{$mov->title}}">
-                                 @else
-                                 <img class="lazy img-responsive" src="{{asset('uploads/movie/'.$mov->image)}}" alt="{{$mov->title}}" title="{{$mov->title}}">
-                                 @endif
-                              </figure>
-                              <span class="status">
-                                 @if($mov->resolution == 0) HD
-                                 @elseif($mov->resolution == 1) SD
-                                 @elseif($mov->resolution == 2) HDCam
-                                 @elseif($mov->resolution == 3) Cam
-                                 @elseif($mov->resolution == 4) FullHD
-                                 @else Trailer
-                                 @endif 
-                              </span>
-                              <span class="episode"><i class="fa fa-play" aria-hidden="true"></i>
-                                 {{$mov->episode_count}} / {{$mov->sotap}}
-                                 @if($mov->vietsub == 0) 
-                                    Phụ đề
-                                    @if ($mov->season != 0) 
-                                      - Season: {{$mov->season}}
+                     <?php
+                        $movie_category = App\Models\Movie_Category::where('category_id',$cate_home->id)->get();
+                        $many_category = [];
+                        foreach($movie_category as $key => $movi){
+                              $many_category[] = $movi->movie_id;
+                        }
+                        $movie_cate = App\Models\Movie::withCount('episode')->whereIn('id',$many_category)->where('status',1)->where('duyet',1)->orderBy('updated','DESC')->paginate(8);
+                        ?>
+                     @if(isset($movie_cate))
+                        @foreach($movie_cate as $key => $mov)
+                        <article class="col-md-3 col-sm-3 col-xs-6 thumb grid-item post-37606">
+                           <div class="halim-item">
+                              <a class="halim-thumb" href="{{route('movie',$mov->slug)}}">
+                                 <figure>
+                                    @php
+                                       $image_check = substr($mov->image,0,5);
+                                    @endphp
+                                    @if($image_check =='https')
+                                    <img class="lazy img-responsive" src="{{$mov->image}}" alt="{{$mov->title}}" title="{{$mov->title}}">
+                                    @else
+                                    <img class="lazy img-responsive" src="{{asset('uploads/movie/'.$mov->image)}}" alt="{{$mov->title}}" title="{{$mov->title}}">
                                     @endif
-                                 @else Thuyết minh 
-                                    @if ($mov->season != 0) 
-                                    - Season: {{$mov->season}}
-                                    @endif
-                                 @endif 
-                              </span> 
-                              {{-- <span class="episode"><i class="fa fa-play" aria-hidden="true"></i> --}}
-                                 
-                              </span> 
-                              <div class="icon_overlay"></div>
-                              <div class="halim-post-title-box">
-                                 <div class="halim-post-title ">
-                                    <p class="entry-title">{{$mov->title}}</p>
-                                    <p class="original_title">{{$mov->name_eng}}</p>
+                                 </figure>
+                                 <span class="status">
+                                    @if($mov->resolution == 0) HD
+                                    @elseif($mov->resolution == 1) SD
+                                    @elseif($mov->resolution == 2) HDCam
+                                    @elseif($mov->resolution == 3) Cam
+                                    @elseif($mov->resolution == 4) FullHD
+                                    @else Trailer
+                                    @endif 
+                                 </span>
+                                 <span class="episode"><i class="fa fa-play" aria-hidden="true"></i>
+                                    {{$mov->episode_count}} / {{$mov->sotap}}
+                                    @if($mov->vietsub == 0) 
+                                       Phụ đề
+                                       @if ($mov->season != 0) 
+                                       - Season: {{$mov->season}}
+                                       @endif
+                                    @else Thuyết minh 
+                                       @if ($mov->season != 0) 
+                                       - Season: {{$mov->season}}
+                                       @endif
+                                    @endif 
+                                 </span> 
+                                 {{-- <span class="episode"><i class="fa fa-play" aria-hidden="true"></i> --}}
+                                    
+                                 </span> 
+                                 <div class="icon_overlay"></div>
+                                 <div class="halim-post-title-box">
+                                    <div class="halim-post-title ">
+                                       <p class="entry-title">{{$mov->title}}</p>
+                                       <p class="original_title">{{$mov->name_eng}}</p>
+                                    </div>
                                  </div>
-                              </div>
-                           </a>
-                        </div>
-                     </article>
-                     @endforeach
+                              </a>
+                           </div>
+                        </article>
+                        @endforeach
+                     @endif
                   </div>
                </section>
                <div class="clearfix"></div>

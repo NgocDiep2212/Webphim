@@ -40,9 +40,10 @@ class IndexController extends Controller
             $visitor->save();
         }
         $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
-        $category_home = Category::with(['movie' => function($q){
-                                                        $q->withCount('episode');
-                                                    }])->orderBy('id','DESC')->where('status',1)->get();
+        // $category_home = Category::with(['movie' => function($q){
+        //                                                 $q->withCount('episode');
+        //                                             }])->orderBy('id','DESC')->where('status',1)->get();
+        $category_home = Category::orderBy('id','ASC')->where('status',1)->get();
         return view('pages.home', compact('category_home','yeuthich_list'));
     }
     public function category($slug){
