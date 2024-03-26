@@ -20,7 +20,6 @@ use App\Models\Rating;
 use App\Models\YeuThich;
 use App\Models\GoiVip;
 use App\Models\HoaDon;
-use App\Models\YeuCau;
 
 use Algenza\Cosinesimilarity\Cosine;
 use Mail;
@@ -33,13 +32,15 @@ class IndexController extends Controller
     public function home(){
         //nested trong laravel: noi cac bang
         $user = Auth::guard('web')->user();
-        
+        $yeuthich_list = "";
         $visitor = \Tracker::currentSession();
-        if($visitor) {
-            $visitor->user_id= Auth::user()->id;
-            $visitor->save();
+        if(isset($user)){
+            if($visitor) {
+                $visitor->user_id= Auth::user()->id;
+                $visitor->save();
+            }
+            $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
         }
-        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
         // $category_home = Category::with(['movie' => function($q){
         //                                                 $q->withCount('episode');
         //                                             }])->orderBy('id','DESC')->where('status',1)->get();
@@ -115,8 +116,12 @@ class IndexController extends Controller
 
         //yeuthich
         $user = Auth::guard('web')->user();
-        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
-        $yeuthich = YeuThich::where('movie_id',$movie->id)->with('movie')->where('user_id',$user->id)->count();
+        $yeuthich_list ="";
+        $yeuthich ="";
+        if(isset($user)){
+            $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+            $yeuthich = YeuThich::where('movie_id',$movie->id)->with('movie')->where('user_id',$user->id)->count();
+        }
         return view('pages.movie',compact('user','yeuthich','yeuthich_list','rating','count_total','bl','movie','related','episode','episode_first','episode_current_list_count'));
     }
     public function watch($slug, $tap, $server_active){
@@ -151,7 +156,11 @@ class IndexController extends Controller
         //$episode_link = Episode_Server::where('episode_id', $episode->id)->first();
         $episode_list = Episode::where('movie_id',$movie->id)->orderBy('episode','ASC')->get();
         $user = Auth::guard('web')->user();
-        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+        $yeuthich_list = "";
+        if(isset($user)){
+            $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+
+        }
         return view('pages.watch',compact('yeuthich_list','server_active','episode_list','episode_movie','server','movie','tapphim','episode','related')); 
     }
 

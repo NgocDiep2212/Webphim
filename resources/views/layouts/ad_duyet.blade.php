@@ -113,44 +113,7 @@
                   $segment = Request::segment(2);
                 @endphp
 
-                <li class="treeview {{($segment == 'duyet-phim' ? 'active' : '')}}">
-                  <a href="{{route('duyet-phim')}}">
-                    <i class="fa fa-folder-open" aria-hidden="true"></i>
-                    <span>Duyệt Phim</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </a>
-                  {{-- <ul class="treeview-menu">
-                    <li>
-                      <a href="{{route('category.create')}}"
-                        ><i class="fa fa-angle-right"></i>Thêm Danh Mục</a
-                      >
-                    </li>
-                    <li>
-                      <a href="{{route('category.index')}}"
-                        ><i class="fa fa-angle-right"></i>Liệt Kê Danh Mục</a
-                      >
-                    </li>
-                  </ul> --}}
-                </li>
-                <li class="treeview {{($segment == 'lichsu-duyetphim' ? 'active' : '')}}">
-                  <a href="{{route('lichsu-duyetphim')}}">
-                    <i class="fa fa-folder-o" aria-hidden="true"></i>
-                    <span>Lịch sử duyệt phim</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </a>
-                  {{-- <ul class="treeview-menu">
-                    <li>
-                      <a href="{{route('genre.create')}}"
-                        ><i class="fa fa-angle-right"></i>Thêm Thể loại</a
-                      >
-                    </li>
-                    <li>
-                      <a href="{{route('genre.index')}}"
-                        ><i class="fa fa-angle-right"></i>Liệt Kê Thể Loại</a
-                      >
-                    </li>
-                  </ul> --}}
-                </li>
+                
                 
               </ul>
             </div>

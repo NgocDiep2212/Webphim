@@ -24,6 +24,7 @@
             
              <div class="halim-movie-wrapper">
                 <div class="title-block">
+                  @if($user != null)
                    <div id="bookmark" class="bookmark-img-animation primary_ribbon" data-id="38424" style="text-align: center;">
                       <div class="halim-pulse-ring"></div>
                       @if($yeuthich != null)
@@ -33,9 +34,35 @@
                       @endif
                    </div>
                    <div class="title-wrapper" style="font-weight: bold;">
-                      Bookmark
+                     
                    </div>
+                  @else
+                  <div id="bookmark" class="bookmark-img-animation primary_ribbon" data-id="38424" style="text-align: center;" >
+                     <div class="halim-pulse-ring"></div>
+                     <a data-toggle="modal" data-target="#require_login">
+                        <i class="fa fa-bookmark" id="yeuthich" ></i>
+                      </a>
+                  </div>
                 </div>
+                <div class="modal fade" id="require_login" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Vui lòng <a href="{{route('login')}}" class="btn btn-primary">Đăng Nhập </a> để sử dụng tính năng này.
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                @endif
                 <div class="movie_info col-xs-12">
                    <div class="movie-poster col-md-3">
                      @php
@@ -286,7 +313,12 @@ echo '<iframe width="100%" height="315" src="https://www.youtube.com/embed/'.$mo
                   @csrf
                  <input type="hidden" hidden name="movie_id" value="{{$movie->id}}">
                  <textarea name="noi_dung" placeholder="Nhập bình luận của bạn..." required style="width: 80%"></textarea>
+                 @if(isset($user))
                  <button type="submit">Bình luận</button>
+                  @else 
+                  <a href="#" class="btn" data-toggle="modal" data-target="#require_login">Bình luận</a>
+                  @endif
+                 
                </form>
 
                @if(isset($bl))
@@ -307,7 +339,11 @@ echo '<iframe width="100%" height="315" src="https://www.youtube.com/embed/'.$mo
                                     <span>{{$rep->user_cmt->name}} {{$rep->noidung}}</span>
                                     <span class="cmt-id" style="display: none">{{$comment->id}}</span>
                                     <p class="us-id" style="display: none">{{$rep->user_reply->id}}</p>
+                                    @if(isset($user))
                                     <div class="reply-cmt" onclick="click_rep()">Trả lời</div>
+                                    @else 
+                                    <div data-toggle="modal" data-target="#require_login">Trả lời</div>
+                                    @endif
                                  </li>
                               @endforeach
                            </ul>

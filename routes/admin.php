@@ -77,9 +77,6 @@ Route::middleware('auth:admin')->group(function (){
     Route::get('/lichsu-duyetmovie',[HomeController::class, 'lichsu_duyetphim'])->name('lichsu-duyetmovie');
     Route::get('/xoa-nv',[NhanVienController::class, 'xoa_nv'])->name('xoa-nv');
     Route::post('/khoiphuc-nv/{slug}', [NhanVienController::class,'khoiphuc_nv'])->name('khoiphuc-nv');
-    Route::get('/yeucau',[YeuCauController::class, 'index'])->name('yeucau');
-    Route::post('/yeucau-accept',[YeuCauController::class, 'accept'])->name('yeucau-accept');
-    Route::post('/yeucau-deny',[YeuCauController::class, 'deny'])->name('yeucau-deny');
     Route::get('/thongke',[HomeController::class, 'chart'])->name('thongke');
     Route::get('/get-month-views',[HomeController::class, 'getMonthViews'])->name('get-month-views');
     Route::get('/get-month-sales',[HomeController::class, 'getMonthSales'])->name('get-month-sales');
