@@ -65,7 +65,7 @@ class DuyetController extends Controller
     public function duyetphim()
     {
         //asc: số 0 đi đầu, desc: cuối đi đầu
-        $list = Movie::where('status',1)->where('duyet',0)->orderBy('id','ASC')->get();
+        $list = Movie::where('duyet',0)->where('status',1)->orderBy('id','ASC')->get();
         return view('admincp.duyetAdmin.duyetphim.index',compact('list'));
     }
     public function duyet_accept($slug)

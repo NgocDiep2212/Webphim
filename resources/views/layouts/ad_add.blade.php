@@ -17,6 +17,7 @@
                       function hideURLbar() { window.scrollTo(0, 1); }
     </script>
     <!-- Bootstrap Core CSS -->
+    
     <link href="{{asset('backends/css/bootstrap.css')}}" rel="stylesheet" type="text/css" />
     <!-- Custom CSS -->
     <link href="{{asset('backends/css/style.css')}}" rel="stylesheet" type="text/css" />
@@ -101,7 +102,7 @@
                 </li>
                 @php
                   //127.0.0.1:8000/segment1/segment2/.../segmentn
-                  $segment = Request::segment(1);
+                  $segment = Request::segment(2);
                 @endphp
 
                 <li class="treeview {{($segment == 'category' ? 'active' : '')}}">
@@ -183,7 +184,7 @@
                     
                   </ul>
                 </li>
-                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'leech-movie' || $segment == 'leeched-movie' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-film" aria-hidden="true"></i>
                     <span>Leech Phim</span>
@@ -220,7 +221,7 @@
                     </li>
                   </ul>
                 </li>
-                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'lichsu-movie' ? 'active' : '')}}">
                   <a href="{{route('lichsu-movie')}}">
                     <i class="fa fa-film" aria-hidden="true"></i>
                     <span>Lịch sử thêm phim</span>

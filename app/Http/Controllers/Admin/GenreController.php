@@ -65,9 +65,9 @@ class GenreController extends Controller
      */
     public function edit($id)
     {
-        $genre = Genre::find($id);
+        $genre_form = Genre::find($id);
         $list = Genre::all();
-        return view('admincp.addAdmin.genre.form',compact('list','genre'));
+        return view('admincp.addAdmin.genre.form',compact('list','genre_form'));
     }
 
     /**

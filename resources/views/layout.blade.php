@@ -111,15 +111,17 @@
                            use App\Models\HoaDon;
                            use Carbon\Carbon;
                            $date_now = Carbon::now()->format('Y-m-d');
-                           $user_id = Auth::guard('web')->user()->id;
-                           $hoadon = HoaDon::where('user_id',$user_id)->orderBy('created_at','desc')->first();
-                           if(isset($hoadon)){
-                              if($hoadon->expired_at >= $date_now){
-                                 $expired = Carbon::parse($hoadon->expired_at);
-                                 $vip = true;
-                                 $time_expired = $expired->diffInDays($date_now);
-                              } 
-
+                           if(Auth::guard('web')->user() != null){
+                              $user_id = Auth::guard('web')->user()->id;
+                              $hoadon = HoaDon::where('user_id',$user_id)->orderBy('created_at','desc')->first();
+                              if(isset($hoadon)){
+                                 if($hoadon->expired_at >= $date_now){
+                                    $expired = Carbon::parse($hoadon->expired_at);
+                                    $vip = true;
+                                    $time_expired = $expired->diffInDays($date_now);
+                                 } 
+   
+                              }
                            }
                       ?>
                       @if(!isset($vip))
@@ -136,7 +138,7 @@
 
                          </div>
                      </div>
-                     @else 
+                     @elseif(isset($vip))
                      <div class="btn btn-warning" style="margin-right: 10px;">
                        {{-- {{$hoadon->goivip->name}} <br/> --}}
                        {{$time_expired}} Ngày
@@ -271,7 +273,7 @@
                         <li class="mega dropdown">
                            <a title="Năm Phim" href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true">Năm phim<span class="caret"></span></a>
                            <ul role="menu" class=" dropdown-menu">
-                             @for($year=2000;$year<=2023;$year++)
+                             @for($year=2024;$year>=2000;$year--)
                                  <li><a title="{{$year}}" href="{{url('nam/'.$year)}}">{{$year}}</a></li>
                               @endfor
                            </ul>

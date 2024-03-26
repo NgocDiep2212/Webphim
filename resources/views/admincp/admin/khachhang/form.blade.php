@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    Quản lý Nhân Viên
+                    Quản lý Khách Hàng
                 </div>
                 <div class="card-body">
                     @if(session('status'))

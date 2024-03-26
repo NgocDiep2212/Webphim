@@ -21,13 +21,7 @@ class LoginController extends Controller
             $role = Role::where('role',$user->id_role)->where('status', 1)->first();
             //echo (int)$role['id'];
             if(isset($role['role']) && $user->status == 1){
-                if ((int)$role['role'] == 0) {
-                    return redirect()->route('dashboard');
-                } elseif ((int)$role['role'] == 1) {
-                    return redirect()->route('addHomepage');
-                } elseif ((int)$role['role'] == 2) {
-                    return redirect()->route('duyetHomepage');
-                } 
+                return redirect()->route('dashboard');
             }
             else if($user->status == 0) echo "Tài khoản của bạn đã bị khóa";
         } else {

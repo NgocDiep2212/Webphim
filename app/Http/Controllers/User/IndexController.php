@@ -20,7 +20,6 @@ use App\Models\Rating;
 use App\Models\YeuThich;
 use App\Models\GoiVip;
 use App\Models\HoaDon;
-use App\Models\YeuCau;
 
 use Algenza\Cosinesimilarity\Cosine;
 use Mail;
@@ -33,17 +32,16 @@ class IndexController extends Controller
     public function home(){
         //nested trong laravel: noi cac bang
         $user = Auth::guard('web')->user();
-        
+        $yeuthich_list = "";
         $visitor = \Tracker::currentSession();
         if($visitor) {
             $visitor->user_id= Auth::user()->id;
             $visitor->save();
         }
         $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
-        // $category_home = Category::with(['movie' => function($q){
-        //                                                 $q->withCount('episode');
-        //                                             }])->orderBy('id','DESC')->where('status',1)->get();
-        $category_home = Category::orderBy('id','ASC')->where('status',1)->get();
+        $category_home = Category::with(['movie' => function($q){
+                                                        $q->withCount('episode');
+                                                    }])->orderBy('id','DESC')->where('status',1)->get();
         return view('pages.home', compact('category_home','yeuthich_list'));
     }
     public function category($slug){
@@ -115,15 +113,29 @@ class IndexController extends Controller
 
         //yeuthich
         $user = Auth::guard('web')->user();
-        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
-        $yeuthich = YeuThich::where('movie_id',$movie->id)->with('movie')->where('user_id',$user->id)->count();
+        $yeuthich_list ="";
+        $yeuthich ="";
+        if(isset($user)){
+            $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+            $yeuthich = YeuThich::where('movie_id',$movie->id)->with('movie')->where('user_id',$user->id)->count();
+        }
         return view('pages.movie',compact('user','yeuthich','yeuthich_list','rating','count_total','bl','movie','related','episode','episode_first','episode_current_list_count'));
     }
     public function watch($slug, $tap, $server_active){
+        $user = Auth::guard('web')->user();
         $movie = Movie::with('category','genre','movie_genre','country','episode')->where('slug',$slug)->where('duyet',1)->where('status',1)->first();
-        //$related = Movie::with('category','genre','country')->where('category_id',$movie->category->id)->orderBy(DB::raw('RAND()'))->whereNotIn('slug',[$slug])->get();
-        $related = Movie::with('category','genre','country')->where('country_id',$movie->country->id)->orderBy(DB::raw('RAND()'))->whereNotIn('slug',[$slug])->where('duyet',1)->get();
+        $top_related = $this->related_movie($user->id);
         
+        $related = [];
+        if(count($top_related) > 1){
+            foreach ($top_related as $top_id) {
+                array_push($related, Movie::where('id',$top_id)->whereNotIn('slug',[$slug])->where('status',1)->where('duyet',1)->get());
+              }
+        }
+        if(!isset($related[0])){
+            $related = Movie::with('category','genre','country')->where('category_id',$movie->category->id)->orderBy(DB::raw('RAND()'))->whereNotIn('slug',[$slug])->get();
+        }
+                
         //lay tap 
         if(isset($tap)){
             $tapphim = $tap;
@@ -141,9 +153,14 @@ class IndexController extends Controller
         //$episode_link = Episode_Server::where('episode_id', $episode->id)->first();
         $episode_list = Episode::where('movie_id',$movie->id)->orderBy('episode','ASC')->get();
         $user = Auth::guard('web')->user();
-        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+        $yeuthich_list = "";
+        if(isset($user)){
+            $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+
+        }
         return view('pages.watch',compact('yeuthich_list','server_active','episode_list','episode_movie','server','movie','tapphim','episode','related')); 
     }
+
     public function episode(){
         return view('pages.episode');
     }
@@ -253,7 +270,7 @@ class IndexController extends Controller
             $yeuthich->delete();
             echo 'exist';
         }else{
-            $yeuthich = new yeuthich();
+            $yeuthich = new Yeuthich();
             $yeuthich->movie_id = $data['movie_id'];
             $yeuthich->user_id = $user->id;
             $yeuthich->created_at = Carbon::now('Asia/Ho_Chi_Minh');
@@ -278,7 +295,7 @@ class IndexController extends Controller
             $output .='<div class="item">
                 <a href="'.url('phim/'.$mov->slug).'" title="'.$mov->title.'">
                     <div class="item-link">
-                    <img src="'.asset($mov->image).'" class="lazy post-thumb" alt="'.$mov->title.'" title="'.$mov->title.'" />
+                    <img src="'.asset('uploads/movie/'.$mov->image).'" class="lazy post-thumb" alt="'.$mov->title.'" title="'.$mov->title.'" />
                     <span class="is_trailer">'.$text.'</span>
                     </div>
                     <p class="title">'.$mov->title.'</p>
@@ -310,7 +327,7 @@ class IndexController extends Controller
             $output .='<div class="item">
                 <a href="'.url('phim/'.$mov->slug).'" title="'.$mov->title.'">
                     <div class="item-link">
-                    <img src="'.asset($mov->image).'" class="lazy post-thumb" alt="'.$mov->title.'" title="'.$mov->title.'" />
+                    <img src="'.asset('uploads/movie/'.$mov->image).'" class="lazy post-thumb" alt="'.$mov->title.'" title="'.$mov->title.'" />
                     <span class="is_trailer">'.$text.'</span>
                     </div>
                     <p class="title">'.$mov->title.'</p>
@@ -467,7 +484,7 @@ class IndexController extends Controller
         return redirect()->back();
     }
 
-    public function related_movie(){
+    public function related_movie($user_id){
         $rates = Rating::all();
 
         $matrix = [];
@@ -475,10 +492,22 @@ class IndexController extends Controller
         foreach ($rates as $rate) {
             $matrix[$rate->user_id][$rate->movie_id] = $rate->rate;
         }
-        $e = $this->getRecommendation($matrix, 11);
-        return $e;
-    }
+        $recommendations = $this->getRecommendation($matrix, $user_id);
+        //return $this->getRecommendation($matrix, 11);
 
+        $topMovies = [];
+        $count = 0;
+        foreach ($recommendations as $movieId => $score) {
+        if ($count < 5) {
+            $topMovies[] = $movieId;
+            $count++;
+        } else {
+            break;
+        }
+        }
+        return $topMovies;
+
+    }
     function getSimilarity($matrix, $item, $otherProduct)
 {
 	$vectorUser = array();
@@ -502,7 +531,7 @@ class IndexController extends Controller
 		}
 	}
 	$data =  Cosine::similarity($vectorUser, $vectorOtherUser);
-	if ($match == 0 || $temp < 0.5) {
+	if ($match == 0) {
 		return -1;
 	}
 
@@ -520,6 +549,7 @@ function getRecommendation($matrix, $user)
 			// "Độ gần giống : " . $otherUser . " với " . $user . " là : " . $sim . "<br/>";
 			if ($sim == -1) continue;
 			foreach ($matrix[$otherUser] as $key => $value) {
+                
 				if (!array_key_exists($key, $matrix[$user])) {
                     if (!array_key_exists($key, $total)) {
                         $total[$key] = 0;
@@ -538,10 +568,12 @@ function getRecommendation($matrix, $user)
 	foreach ($total as $key => $value) {
 		$ranks[$key] = $value / $simsums[$key];
 	}
-	array_multisort($ranks, SORT_DESC);
+	//array_multisort($ranks, SORT_DESC);
 	return $ranks;
 }
 
 
 
-}
+
+    }
+

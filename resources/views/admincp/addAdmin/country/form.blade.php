@@ -14,7 +14,7 @@
                             {{session('status')}}
                         </div>
                     @endif
-                    @if(!isset($country))
+                    @if(!isset($country_form))
                     {!! Form::open([
                         'method' => 'POST',
                         'route' =>['country.store'],
@@ -22,27 +22,27 @@
                     @else 
                     {!! Form::open([
                         'method' => 'PUT',
-                        'route' =>['country.update',$country->id],
+                        'route' =>['country.update',$country_form->id],
                     ]) !!}
                     @endif
 
                         <div class="form-group">
                             {!! Form::label('title', 'Title', []) !!}
-                            {!! Form::text('title', isset($country) ? $country->title : '', ['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...','id'=>'slug', 'onkeyup' => 'ChangeToSlug()', 'required'=>'required']) !!}
+                            {!! Form::text('title', isset($country_form) ? $country_form->title : '', ['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...','id'=>'slug', 'onkeyup' => 'ChangeToSlug()', 'required'=>'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('slug', 'Slug', []) !!}
-                            {!! Form::text('slug', isset($country) ? $country->slug : '', ['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...','id'=>'convert_slug', 'required'=>'required']) !!}
+                            {!! Form::text('slug', isset($country_form) ? $country_form->slug : '', ['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...','id'=>'convert_slug', 'required'=>'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('description', 'Description', []) !!}
-                            {!! Form::textarea('description', isset($country) ? $country->description : '', ['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...','id'=>'description', 'required'=>'required']) !!}
+                            {!! Form::textarea('description', isset($country_form) ? $country_form->description : '', ['class'=>'form-control','placeholder' => 'Nhập vào dữ liệu...','id'=>'description', 'required'=>'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('Action', 'Action', []) !!}
-                            {!! Form::select('status', ['1'=>'Hiển thị', '0' => 'Không'], isset($country) ? $country->status : '', ['class'=>'form-control']) !!}
+                            {!! Form::select('status', ['1'=>'Hiển thị', '0' => 'Không'], isset($country_form) ? $country_form->status : '', ['class'=>'form-control']) !!}
                         </div>
-                    @if(!isset($country))
+                    @if(!isset($country_form))
                         {!! Form::submit('Thêm dữ liệu', ['class'=>'btn btn-success']) !!}
                     @else
                         {!! Form::submit('Cập nhật', ['class'=>'btn btn-success']) !!}

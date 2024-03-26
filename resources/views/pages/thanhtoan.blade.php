@@ -3,7 +3,7 @@
 <div class="row container" id="wrapper">
     <div class="content row container" style="text-align: center;margin: 0px auto 38px auto;">
          <h4 style="color: #e1a626; font-weight: 600;font-size: 24px; margin: 20px;">Vui Lòng Chọn Hình Thức Thanh Toán</h4>
-         <div class="col-sm-3"> 
+         <div class=""> 
             <h4>Thanh toán VNPay</h4>
             <form action="{{route('thanh-toan-vnpay')}}" method="post">
                @csrf

@@ -17,8 +17,8 @@
                       function hideURLbar() { window.scrollTo(0, 1); }
     </script>
     <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link href="{{asset('backends/css/bootstrap.css')}}" rel="stylesheet" type="text/css" />
-    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"> --}}
     <!-- Custom CSS -->
     <link href="{{asset('backends/css/style.css')}}" rel="stylesheet" type="text/css" />
     <!-- font-awesome icons CSS -->
@@ -121,9 +121,15 @@
                 </li>
                 @php
                   //127.0.0.1:8000/segment1/segment2/.../segmentn
-                  $segment = Request::segment(1);
+                  $segment = Request::segment(2);
                 @endphp
 
+                <?php 
+                  $a = Illuminate\Support\Facades\Auth::guard('admin')->user();
+                  $admin = App\Models\Admin::where('id',$a->id)->first();
+                  $role = $admin->id_role;
+                ?>
+                @if($role == 0)
                 <li class="treeview {{($segment == 'nhanvien' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-folder-open" aria-hidden="true"></i>
@@ -177,7 +183,7 @@
                     </li>
                   </ul>
                 </li>
-                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'goivip' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-film" aria-hidden="true"></i>
                     <span>Quản lý Gói VIP</span>
@@ -196,21 +202,15 @@
                     </li>
                   </ul>
                 </li>
-                <li class="treeview {{($segment == 'country' ? 'active' : '')}}">
-                  <a href="{{route('yeucau')}}">
-                    <i class="fa fa-globe" aria-hidden="true"></i>
-                    <span>Duyệt Yêu Cầu</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </a>
-                </li>
-                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                
+                <li class="treeview {{($segment == 'thongke' ? 'active' : '')}}">
                   <a href="{{route('thongke')}}">
                     <i class="fa fa-film" aria-hidden="true"></i>
                     <span>Thống Kê</span>
                     <i class="fa fa-angle-left pull-right"></i>
                   </a>
                 </li>
-                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                <li class="treeview {{($segment == 'lichsu-themphim' || $segment == 'lichsu-duyetmovie' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-film" aria-hidden="true"></i>
                     <span>Lịch Sử Quản Lý Phim</span>
@@ -229,7 +229,182 @@
                     </li>
                   </ul>
                 </li>
-                
+                @elseif($role == 1)
+                <li class="treeview {{($segment == 'category' ? 'active' : '')}}">
+                  <a href="#">
+                    <i class="fa fa-folder-open" aria-hidden="true"></i>
+                    <span>Danh mục phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('category.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Danh Mục</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('category.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Danh Mục</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="treeview {{($segment == 'genre' ? 'active' : '')}}">
+                  <a href="#">
+                    <i class="fa fa-folder-o" aria-hidden="true"></i>
+                    <span>Thể loại phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('genre.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Thể loại</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('genre.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Thể Loại</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="treeview {{($segment == 'country' ? 'active' : '')}}">
+                  <a href="#">
+                    <i class="fa fa-globe" aria-hidden="true"></i>
+                    <span>Quốc Gia phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('country.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Quốc Gia</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('country.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Quốc Gia</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="treeview {{($segment == 'movie' ? 'active' : '')}}">
+                  <a href="#">
+                    <i class="fa fa-film" aria-hidden="true"></i>
+                    <span>Phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('movie.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Phim</a>
+                    </li>
+                    <li>
+                      <a href="{{route('movie.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Phim</a>
+                    </li>
+                    <li>
+                      <a href="{{route('phim-xoa')}}"
+                        ><i class="fa fa-angle-right"></i>Phim đã xóa</a>
+                    </li>
+                    
+                  </ul>
+                </li>
+                <li class="treeview {{($segment == 'leech-movie' || $segment == 'leeched-movie' ? 'active' : '')}}">
+                  <a href="#">
+                    <i class="fa fa-film" aria-hidden="true"></i>
+                    <span>Leech Phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('leech-movie')}}"
+                        ><i class="fa fa-angle-right"></i>Leech Phim</a>
+                    </li>
+                    <li>
+                      <a href="{{route('leeched-movie')}}"
+                        ><i class="fa fa-angle-right"></i>Phim Đã Leech</a>
+                    </li>
+                   
+                  </ul>
+                </li>
+                <li class="treeview {{($segment == 'linkmovie' ? 'active' : '')}}">
+                  <a href="#">
+                    <i class="fa fa-film" aria-hidden="true"></i>
+                    <span>Link Phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('linkmovie.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Link Phim</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('linkmovie.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Link Phim</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="treeview {{($segment == 'lichsu-movie' ? 'active' : '')}}">
+                  <a href="{{route('lichsu-movie')}}">
+                    <i class="fa fa-film" aria-hidden="true"></i>
+                    <span>Lịch sử thêm phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  {{-- <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('linkmovie.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Link Phim</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('linkmovie.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Link Phim</a
+                      >
+                    </li>
+                  </ul> --}}
+                </li>
+                @elseif($role == 2)
+                <li class="treeview {{($segment == 'duyet-phim' ? 'active' : '')}}">
+                  <a href="{{route('duyet-phim')}}">
+                    <i class="fa fa-folder-open" aria-hidden="true"></i>
+                    <span>Duyệt Phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  {{-- <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('category.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Danh Mục</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('category.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Danh Mục</a
+                      >
+                    </li>
+                  </ul> --}}
+                </li>
+                <li class="treeview {{($segment == 'lichsu-duyetphim' ? 'active' : '')}}">
+                  <a href="{{route('lichsu-duyetphim')}}">
+                    <i class="fa fa-folder-o" aria-hidden="true"></i>
+                    <span>Lịch sử duyệt phim</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  {{-- <ul class="treeview-menu">
+                    <li>
+                      <a href="{{route('genre.create')}}"
+                        ><i class="fa fa-angle-right"></i>Thêm Thể loại</a
+                      >
+                    </li>
+                    <li>
+                      <a href="{{route('genre.index')}}"
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Thể Loại</a
+                      >
+                    </li>
+                  </ul> --}}
+                </li>
+                @endif
                 
               </ul>
             </div>
@@ -634,53 +809,127 @@
     <script src="{{asset('backends/js/bootstrap.js')}}"></script>
     <!-- //Bootstrap Core JavaScript -->
     <script type="text/javascript">
-      $('.select-year').change(function(){
-          var year = $(this).find(':selected').val();
-          var id_phim = $(this).attr('id');
-          $.ajax({
-              url:"{{url('/update-year-phim')}}",
-              method:"GET",
-              data:{year:year,id_phim:id_phim},
-              success:function(){
-                  alert('Thay đổi năm phim '+year+' thành công!');
+      $(document).ready(function() {
+          let table = new DataTable('#tablephim');
+  
+          $('.sidebar-menu').SidebarNav();
+  
+          $('.select-year').change(function() {
+              var year = $(this).find(':selected').val();
+              var id_phim = $(this).attr('id');
+              $.ajax({
+                  url: "{{route('update-year-phim')}}",
+                  method: "GET",
+                  data: {
+                      year: year,
+                      id_phim: id_phim
+                  },
+                  success: function() {
+                      alert('Thay đổi năm phim ' + year + ' thành công!');
+                  }
+              });
+          });
+  
+          $('.select-season').change(function() {
+              var season = $(this).find(':selected').val();
+              var id_phim = $(this).attr('id');
+              $.ajax({
+                  url: "{{route('update-season-phim')}}",
+                  method: "GET",
+                  data: {
+                      season: season,
+                      id_phim: id_phim
+                  },
+                  success: function() {
+                      alert('Thay đổi thành season ' + season + ' thành công!');
+                  }
+              });
+          });
+  
+          $('.select-topview').change(function() {
+              var topview = $(this).find(':selected').val();
+              var id_phim = $(this).attr('id');
+              var text;
+              if (topview == 1) {
+                  text = 'Ngày';
+              } else if (topview == 2) {
+                  text = 'Tuần';
+              } else if (topview == 3) {
+                  text = 'Tháng';
+              }
+              $.ajax({
+                  url: "{{route('update-top-view')}}",
+                  method: "GET",
+                  data: {
+                      topview: topview,
+                      id_phim: id_phim
+                  },
+                  success: function() {
+                      alert('Thay đổi phim theo topview ' + text + ' thành công!');
+                  }
+              });
+          });
+          $('.select-vip').change(function() {
+              var vip = $(this).find(':selected').val();
+              var id_phim = $(this).attr('id');
+              var text;
+              if (vip == 0) {
+                  text = 'Không VIP';
+              } else if (vip == 1) {
+                  text = 'VIP';
+              } 
+              $.ajax({
+                  url: "{{route('update-vip')}}",
+                  method: "GET",
+                  data: {
+                      vip: vip,
+                      id_phim: id_phim
+                  },
+                  success: function() {
+                      alert('Thay đổi phim ' + text + ' thành công!');
+                  }
+              });
+          });
+  
+         
+  
+          $('.order_position').sortable({
+              placeholder: 'ui-state-highlight',
+              update: function(event, ui) {
+                  var array_id = [];
+                  $('.order_position tr').each(function() {
+                      array_id.push($(this).attr('id'));
+                  });
+                  $.ajax({
+                      headers: {
+                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                      },
+                      url: "{{route('resorting')}}",
+                      method: "POST",
+                      data: {
+                          array_id: array_id
+                      },
+                      success: function(data) {
+                          alert('Sắp xếp thứ tự thành công');
+                      }
+                  });
               }
           });
-      })
-  </script>
-  <script type="text/javascript">
-      $('.select-season').change(function(){
-          var season = $(this).find(':selected').val();
-          var id_phim = $(this).attr('id');
-          $.ajax({
-              url:"{{url('/update-season-phim')}}",
-              method:"GET",
-              data:{season:season,id_phim:id_phim},
-              success:function(){
-                  alert('Thay đổi thành season '+season+' thành công!');
-              }
+  
+          $('.select-movie').change(function() {
+              var id = $(this).val();
+              $.ajax({
+                  url: "{{route('select-movie')}}",
+                  method: "GET",
+                  data: {
+                      id: id
+                  },
+                  success: function(data) {
+                      $('#show_movie').html(data);
+                  }
+              });
           });
-      })
-  </script>
-  <script type="text/javascript">
-      $('.select-topview').change(function(){
-          var topview = $(this).find(':selected').val();
-          var id_phim = $(this).attr('id');
-          if(topview == 1){
-              var text = 'Ngày';
-          }else if(topview == 2){
-              var text = 'Tuần';
-          }else if(topview == 3){
-              var text = 'Tháng';
-          }
-          $.ajax({
-              url:"{{url('/update-topview-phim')}}",
-              method:"GET",
-              data:{topview:topview,id_phim:id_phim},
-              success:function(){
-                  alert('Thay đổi phim theo topview '+text+' thành công!');
-              }
-          });
-      })
+      });
   </script>
   <script type="text/javascript">
       $(document).ready(function (){
@@ -722,7 +971,7 @@
       </script>
 
       {{-- chon tap phim trong them tap phim --}}
-      <script type="text/javascript">
+      {{-- <script type="text/javascript">
           $('.select-movie').change(function(){
               var id = $(this).val();
               $.ajax({
@@ -734,7 +983,7 @@
                       }
                   });
           });
-      </script>
+      </script> --}}
       {{-- <script type="text/javascript">
         $('#lineChartSelect').change(function(){
             var thang = $(this).find(':selected').val();

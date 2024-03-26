@@ -1,7 +1,7 @@
 @extends('layouts.ad_add')
 
 @section('content')
-<table class="table" id="">
+<table class="table" id="tablephim">
     <thead>
       <tr>
         <th scope="col">#</th>
@@ -18,9 +18,10 @@
         @foreach($list as $key => $res)
       <tr >
         <th scope="row">{{$key}}</th>
+        @if(isset($res->movie->title))
         <td>{{$res->movie->title}}</td>
         <td>{{$res->movie->name_eng}}</td>
-        <td> <img src="{{$res->movie->image}}" height="80" width="80" alt=""> </td>
+        <td> <img src="{{asset('uploads/movie/'.$res->movie->image)}}" height="80" width="80" alt=""> </td>
         <td>{{$res->movie->slug}}</td>
         <td>{{$res->movie->id_leech}}</td>
         <td>{{$res->movie->year}}</td>
@@ -39,7 +40,7 @@
             <a class="btn btn-danger" href="{{route('destroy-leech', $movie->id)}}">Xóa</a>
             @endif
         </td>
-       
+       @endif
         {{-- <td>
             {!! Form::open([
                 'method' => 'DELETE',
