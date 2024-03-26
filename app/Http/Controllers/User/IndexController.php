@@ -34,17 +34,14 @@ class IndexController extends Controller
         $user = Auth::guard('web')->user();
         $yeuthich_list = "";
         $visitor = \Tracker::currentSession();
-        if(isset($user)){
-            if($visitor) {
-                $visitor->user_id= Auth::user()->id;
-                $visitor->save();
-            }
-            $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+        if($visitor) {
+            $visitor->user_id= Auth::user()->id;
+            $visitor->save();
         }
-        // $category_home = Category::with(['movie' => function($q){
-        //                                                 $q->withCount('episode');
-        //                                             }])->orderBy('id','DESC')->where('status',1)->get();
-        $category_home = Category::orderBy('id','ASC')->where('status',1)->get();
+        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+        $category_home = Category::with(['movie' => function($q){
+                                                        $q->withCount('episode');
+                                                    }])->orderBy('id','DESC')->where('status',1)->get();
         return view('pages.home', compact('category_home','yeuthich_list'));
     }
     public function category($slug){
