@@ -31,7 +31,7 @@
       <link rel='dns-prefetch' href='//s.w.org' />
       
       <link rel='stylesheet' id='bootstrap-css' href='{{asset('css/bootstrap.min.css?ver=5.7.2')}}' media='all' />
-      
+      <link rel="stylesheet" href="{{asset('css/app.css')}}">
       <link rel='stylesheet' id='style-css' href='{{asset('css/style.css?ver=5.7.2')}}' media='all' />
       <link rel='stylesheet' id='wp-block-library-css' href='{{asset('css/style.min.css?ver=5.7.2')}}' media='all' />
       <script src="{{asset('js/movie.js')}}" type='text/javascript'></script>
@@ -78,8 +78,8 @@
    <body class="home blog halimthemes halimmovies" data-masonry="">
       <header id="header">
          <div class="container">
-            <div class="row" id="headwrap">
-               <div class="col-md-3 col-sm-6 slogan">
+            <div class="row" id="headwrap" style="display: flex; justify-content: center; align-items: center;">
+               <div class="col-md-3 col-sm-6 slogan ">
                   <p class="site-title" style="margin-top: 14px"><a class="logo" href="" title="phim hay ">Phim Hay</p>
                   </a>
                </div>
@@ -90,29 +90,35 @@
                            <div class="form-group form-timkiem">
                               <div class="input-group col-xs-12 ">
                                  <form action="{{route('tim-kiem')}}" method="get" style="display: flex" >
-                                    <input id="timkiem" type="text" name="search" class="form-control" placeholder="Tìm kiếm..." autocomplete="off">
-                                    <button class="btn btn-primary" >Tìm kiếm</button>
+                                    <input id="timkiem" type="text" name="search" class="form-control" placeholder="Tìm kiếm..." autocomplete="off" style="width: 346px;">
+                                    <select name="phanloaitk" id="phanloaitk" class="form-control" style="width: 100px; padding: 5px 10px;">
+                                       <option value="name" style="color:white;">Tên phim</option>
+                                       <option value="dienvien" style="color:white;">Diễn viên</option>
+                                       <option value="noidung" style="color:white;">Nội dung</option>
+                                    </select>
+                                    <button class="btn btn-primary" style="z-index: 50;">Tìm kiếm</button>
                                  </form>
                                  <i class="animate-spin hl-spin4 hidden"></i>
                               </div>
                            </div>
-                       
-                        <ul class="list-group" id="result" style="display: none">
+                        <ul  id="result" style="display: none; width: 75%; position: absolute; z-index: 50; background: rgb(20, 25, 30);padding: 0; ">
                           
                         </ul>
                      </div>
                   </div>
                </div>
 
-                  <div class="col-md-4 hidden-xs" style="display: flex;">
-                     <div style="relative">
+                  <div class="col-md-4 hidden-xs" style="display: flex; justify-content: end;">
+                     <div style="display: flex">
                       <?php 
                            use Illuminate\Support\Facades\Auth;
                            use App\Models\HoaDon;
+                           use App\Models\User;
                            use Carbon\Carbon;
                            $date_now = Carbon::now()->format('Y-m-d');
                            if(Auth::guard('web')->user() != null){
                               $user_id = Auth::guard('web')->user()->id;
+                              $user = User::find($user_id)->first();
                               $hoadon = HoaDon::where('user_id',$user_id)->orderBy('created_at','desc')->first();
                               if(isset($hoadon)){
                                  if($hoadon->expired_at >= $date_now){
@@ -146,7 +152,8 @@
                      @endif
 
                      @if(isset($yeuthich_list) && $yeuthich_list != null)
-                     <div id="get-bookmark" class="box-shadow" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-bookmark"></i><span> Bookmarks</span><span style="
+                     <div id="get-bookmark" class="box-shadow" data-toggle="modal" data-target="#exampleModalLong">
+                        <div class="fa fa-bookmark"></div><span> Bookmarks</span><span style="
                         margin-left: 5px;
                         background-color: red;
                         padding: 2px 5px;
@@ -176,9 +183,9 @@
                                        @if($yeu->movie != null)
                                        <li style="cursor:pointer; list-style: none;" class="list-group-item link-class">
                                           <a href="{{route('movie',$yeu->movie->slug)}}" style="display: flex; ">
-                                             <img src="{{$yeu->movie->image}}" style="margin-right: 20px; max-height: 180px;" />
-                                             <div style="text-align: justify; color: #0d0a76;">
-                                                <h4 style="font-weight: 600;">{{$yeu->movie->title}} | </h4>
+                                             <img src="{{asset('uploads/movie/'.$yeu->movie->image)}}" style="margin-right: 20px; max-height: 180px;" />
+                                             <div style="text-align: justify; font-size: 12px; ; color: rgb(63, 63, 63);">
+                                                <h4 style="font-weight: 600; margin: 0">{{$yeu->movie->title}} | </h4>
                                                 {!! $yeu->movie->description !!}
                                              </div>
                                           </a>
@@ -190,12 +197,13 @@
                            </div>
                            <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                              <button type="button" class="btn btn-primary">Save changes</button>
                            </div>
                         </div>
                         </div>
                   </div>
                   @endif
+                  @if(!isset($user_id)) <a href="{{route('login')}}" class="btn btn-primary">Đăng nhập</a>
+                  @else
                   <div class="dropdown">
                      <i class="fa fa-user"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="
                      font-size: 24px;border: 3px solid white;padding: 3px 5px;color: white;border-radius: 50%;cursor: pointer;"></i>
@@ -204,8 +212,7 @@
                      </button> --}}
                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="
                      width: 200px; margin-left: auto;padding: 12px 30px;">
-                       <a class="dropdown-item"  href="#" >Tài khoản của tôi</a> <br/>
-                       <a class="dropdown-item" href="#">Action</a> <br/>
+                       @if(isset($user)) <div class="dropdown-item" >{{$user->name}}</div>@endif
                        <form action="{{route('logout')}}" method="post">
                         @csrf
                         <i class="fa fa-sign-out"></i><input type="submit" value="Đăng xuất"style="
@@ -215,7 +222,7 @@
                       </form>
                      </div>
                    </div>
-               
+                  @endif
                   
             </div>
             {{-- <div id="get-bookmark" class="box-shadow"><i class="hl-bookmark"></i><span> Bookmarks</span><span class="count">0</span></div> --}}
@@ -340,30 +347,7 @@
                   <a href="#">Điều khoản dịch vụ</a> <br>
                   <a href="#">Chính sách riêng tư</a> <br>
                   <a href="#">Khiếu nại bản quyền</a> <br>
-                  <a href="#" data-toggle="modal" data-target="#exampleModalCenter">Nâng cấp tài khoản</a>
-                   
-                   <!-- Modal -->
-                   <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                     <div class="modal-dialog modal-dialog-centered" role="document">
-                       <div class="modal-content">
-                         <div class="modal-header">
-                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                             <span aria-hidden="true">&times;</span>
-                           </button>
-                         </div>
-                         <div class="modal-body" style="color: #000">
-                           Bạn muốn gửi yêu cầu nâng cấp thành tài khoản Admin?
-                         </div>
-                         <div class="modal-footer">
-                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                           <form action="{{route('nangcap')}}" method="post">
-                              @csrf
-                              <button type="submit" class="btn btn-primary">Gửi</button>
-                           </form>
-                         </div>
-                       </div>
-                     </div>
-                   </div>
+                  
                </div>
             </div>
          </div>
@@ -379,22 +363,57 @@
      
       <script type="text/javascript">
       $(document).ready(function(){
+         click_rep();
+         //phân loại tìm kiếm
+         const selectElement = document.getElementById('phanloaitk');
+         var selectedOptionValue = 'name';
+         if (selectElement) {
+         selectElement.addEventListener('change', function() {
+            selectedOptionValue = this.value; // Lấy giá trị của option được chọn mỗi khi thay đổi
+         });
+         }
          $('#timkiem').keyup(function() {
          $('#result').html('');
+         
          var search = $('#timkiem').val();
          if (search != '') {
             var expression = new RegExp(search, "i");
             var existingMovies = []; // Khởi tạo mảng trống để lưu trữ tiêu đề phim hiện có
-
+            
             $.getJSON('/json_file/movies.json', function(data) {
                $.each(data, function(key, value) {
-               if (value.title.search(expression) != -1) {
-                  if (existingMovies.indexOf(value.title) === -1) { // Kiểm tra xem tiêu đề phim đã có trong mảng chưa
-                     $('#result').css('display', 'inherit');
-                     existingMovies.push(value.title); // Thêm tiêu đề phim vào mảng để tránh trùng lặp
-                     $('#result').append('<li style="cursor:pointer; display:flex;" class="list-group-item link-class"><img src="' + value.image + '" style="margin-right: 20px; max-width=60px; max-height: 60px;" /><div><div>'+ value.title + ' | </div><span class="text-muted">' + value.description + '</span></div></li>');
+                  if(selectedOptionValue == 'name'){
+                     if (value.title.search(expression) != -1) {
+                        if (!existingMovies.includes(value.title.toLowerCase())) { // Kiểm tra xem tiêu đề phim đã có trong mảng chưa
+                           existingMovies.push(value.title); // Thêm tiêu đề phim vào mảng để tránh trùng lặp
+                           //$('#result').append('<li style="cursor:pointer; display:flex;" class="list-group-item link-class"><img src="' + value.image + '" style="margin-right: 20px; max-width=60px; max-height: 60px;" /><div><div>'+ value.title + ' | </div><span class="text-muted">' + value.description + '</span></div></li>');
+                           $('#result').css('display', 'block');
+                           $('#result').append('<li style="cursor:pointer; list-style: none; margin-top: 8px;margin-bottom: 4px; padding: 2px 20px; border-bottom: 1px solid #786e6e91;" class="list-group-item"><div>'+ value.title + '</div></li>');
+                        }
+                        }
                   }
+                  
+                  if(selectedOptionValue == 'noidung'){
+                     if (value.description.search(expression) != -1) {
+                        if (!existingMovies.includes(value.description.toLowerCase())) { // Kiểm tra xem tiêu đề phim đã có trong mảng chưa
+                           existingMovies.push(value.description); // Thêm tiêu đề phim vào mảng để tránh trùng lặp
+                           //$('#result').append('<li style="cursor:pointer; display:flex;" class="list-group-item link-class"><img src="' + value.image + '" style="margin-right: 20px; max-width=60px; max-height: 60px;" /><div><div>'+ value.title + ' | </div><span class="text-muted">' + value.description + '</span></div></li>');
+                           $('#result').css('display', 'block');
+                           $('#result').append('<li style="cursor:pointer; list-style: none;padding: 2px 20px;border-bottom: 1px solid #786e6e91;" class="list-group-item link-class"><div>'+ value.title + ' | </br>' + value.description+ '</div></li>');
+                        }
+                        }
                   }
+                  if(selectedOptionValue == 'dienvien'){
+                     if (value.actors.search(expression) != -1) {
+                        if (!existingMovies.includes(value.actors.toLowerCase())) { // Kiểm tra xem tiêu đề phim đã có trong mảng chưa
+                           existingMovies.push(value.actors); // Thêm tiêu đề phim vào mảng để tránh trùng lặp
+                           //$('#result').append('<li style="cursor:pointer; display:flex;" class="list-group-item link-class"><img src="' + value.image + '" style="margin-right: 20px; max-width=60px; max-height: 60px;" /><div><div>'+ value.title + ' | </div><span class="text-muted">' + value.description + '</span></div></li>');
+                           $('#result').css('display', 'block');
+                           $('#result').append('<li style="cursor:pointer; list-style: none; padding: 2px 20px;border-bottom: 1px solid #786e6e91;" class="list-group-item"><div>'+ value.title + ' | </br>' + value.actors+ '</div></li>');
+                        }
+                        }
+                  }
+
                   });
                });
                } else {
@@ -403,13 +422,30 @@
             }
          );
 
-
+         $(document).on("click", function(e) {
+            if (!$(e.target).is("#timkiem")) {
+               // Xử lý khi click ra khỏi input
+               $('#result').html('');
+               $('#result').css('display','none');
+            }
+         });
 
          $('#result').on('click','li', function(){
-            var click_text = $(this).text().split('|');
-            $('#timkiem').val($.trim(click_text[0]));
-            $('#result').html('');
-            $('#result').css('display','none');
+            var click_text = $(this).text();
+
+            // Kiểm tra xem text có chứa ký tự | hay không
+            if (click_text.indexOf("|") !== -1) {
+               click_text = click_text.split("|");
+               var movieName = $.trim(click_text[0]);
+               $('#timkiem').val(movieName);
+               $('#result').html('');
+               $('#result').css('display','none');
+            }else{
+               $('#timkiem').val(click_text);
+               $('#result').html('');
+               $('#result').css('display','none');
+            }
+            
          });
       });
       </script>

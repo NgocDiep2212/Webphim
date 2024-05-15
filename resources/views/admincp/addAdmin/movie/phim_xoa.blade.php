@@ -1,4 +1,4 @@
-@extends('layouts.ad_add')
+@extends('layouts.app')
 
 @section('content')
 <div class="container-fluid">
@@ -27,7 +27,7 @@
                   <tr>
                     <th scope="row">{{$key}}</th>
                     <td>{{$cate->movie->title}}</td>
-                    <td>{{$cate->movie->activeEpisodeServer_count}}/{{$cate->sotap}} tập</td>
+                    <td>{{count($cate->movie->activeMovieEpisodeServer)}}/{{$cate->movie->sotap}} tập</td>
                     <td>
                       <a href="{{route('add-episode',[$cate->movie->id])}}" class="btn btn-danger btn-sm">Thêm tập phim</a>
                     </td>

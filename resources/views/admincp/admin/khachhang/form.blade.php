@@ -49,7 +49,10 @@
                                 </div>
                             </div>
                             @endif
-                        
+                            <div class="form-group">
+                                {!! Form::label('Status', 'Status', []) !!}
+                                {!! Form::select('status', ['1'=>'Hiển thị', '0' => 'Không'], isset($khachhang) ? $khachhang->status : '', ['class'=>'form-control']) !!}
+                            </div>
                     @if(!isset($khachhang))
                         {!! Form::submit('Thêm dữ liệu', ['class'=>'btn btn-success']) !!}
                     @else

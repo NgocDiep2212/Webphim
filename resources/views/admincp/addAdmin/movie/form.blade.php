@@ -1,4 +1,4 @@
-@extends('layouts.ad_add')
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
@@ -92,7 +92,7 @@
                             {{-- {!! Form::select('genre_id', $genre, isset($movie) ? $movie->genre_id : '', ['class'=>'form-control']) !!} --}}
                             @foreach($list_genre as $key => $gen)
                                 @if(isset($movie))
-                            {!! Form::checkbox('genre[]', $gen->id,isset($movie_genre) && $movie_genre->contains($gen->id) ? true : false) !!}
+                                {!! Form::checkbox('genre[]', $gen->id, isset($movie_genre) && $movie_genre->contains('id', $gen->id) ? true : false) !!}
                                 @else
                             {!! Form::checkbox('genre[]', $gen->id, '') !!}
                                 @endif
@@ -104,7 +104,8 @@
                             {{-- {!! Form::select('category_id', $category, isset($movie) ? $movie->category_id : '', ['class'=>'form-control']) !!} --}}
                             @foreach($list_category as $key => $gen)
                                 @if(isset($movie))
-                            {!! Form::checkbox('category[]', $gen->id,isset($movie_category) && $movie_category->contains($gen->id) ? true : false) !!}
+                            {!! Form::checkbox('category[]', $gen->id, isset($movie_category) && $movie_category->contains('id', $gen->id) ? true : false) !!}
+                            {{-- {!! Form::checkbox('category[]', $gen->id,isset($movie_category) && $movie_category->contains($gen->id) ? true : false) !!} --}}
                                 @else
                             {!! Form::checkbox('category[]', $gen->id, '') !!}
                                 @endif

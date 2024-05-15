@@ -12,7 +12,11 @@ for (let i = 0; i < replyCmtElements.length; i++) {
 
         // Create comment element
         var commentElement = document.createElement("p");
-
+        commentElement.style.backgroundColor = "gray";
+        commentElement.style.color = "white";
+        commentElement.style.padding = "4px";
+        commentElement.style.width = "250px"
+        
         // Create comment text
         var commentText = document.createTextNode("Trả lời bình luận của " + cmtName);
 

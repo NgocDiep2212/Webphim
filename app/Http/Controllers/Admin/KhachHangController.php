@@ -24,7 +24,7 @@ class KhachHangController extends Controller
     {
         //asc: số 0 đi đầu, desc: cuối đi đầu
         $c = Carbon::now()->format('Y-m-d');
-        $list = User::where('status',1)->orderBy('id','ASC')->get();
+        $list = User::orderBy('id','ASC')->get();
         return view('admincp.admin.khachhang.index',compact('list','c'));
     }
 
@@ -115,6 +115,7 @@ class KhachHangController extends Controller
         $khachhang = User::find($id);
         $khachhang->name = $data['name'];
         $khachhang->email = $data['email'];
+        $khachhang->status = $data['status'];
         $khachhang->updated_at = Carbon::now('Asia/Ho_Chi_Minh');
         $exist = User::where('email', $khachhang->email)->where('status',1)->orderBy('id','ASC')->get();
         // Lấy ra cột id

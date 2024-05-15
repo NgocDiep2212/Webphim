@@ -10,6 +10,7 @@
         <th scope="col">Tạo vào lúc</th>
         <th scope="col">Cập nhật vào lúc</th>
         <th scope="col">VIP</th>
+        <th scope="col">Trạng thái</th>
         <th scope="col">Manage</th>
       </tr>
     </thead>
@@ -26,6 +27,11 @@
           @endif
           {{-- @if(isset($cate->hoadon) && $cate->hoadon->expired_at >= $c) VIP
           @endif --}}
+        </td>
+        <td>
+          @if($cate->status == 1) Hoạt động
+          @else Bị khóa
+          @endif
         </td>
         <td>
             {!! Form::open([

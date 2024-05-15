@@ -48,7 +48,6 @@
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -309,47 +308,54 @@ echo '<iframe width="100%" height="315" src="https://www.youtube.com/embed/'.$mo
                <div class="box-reply" id="box-reply" style="display: none;">
                   <button id="close-reply">X</button>
                </div>
-               <form action="{{url('binhluanphim')}}" method="post" id="comment">
+               <form action="{{url('binhluanphim')}}" method="post" id="comment" style="display: flex; align-items: flex-start;">
                   @csrf
                  <input type="hidden" hidden name="movie_id" value="{{$movie->id}}">
                  <textarea name="noi_dung" placeholder="Nhập bình luận của bạn..." required style="width: 80%"></textarea>
                  @if(isset($user))
-                 <button type="submit">Bình luận</button>
+                 <button type="submit" class="btn" style="background: black;border: 1px solid #8fa3ff;">Bình luận</button>
                   @else 
-                  <a href="#" class="btn" data-toggle="modal" data-target="#require_login">Bình luận</a>
+                  <a href="#" class="btn" data-toggle="modal" data-target="#require_login" style="background: black;border: 1px solid #8fa3ff;">Bình luận</a>
                   @endif
                  
                </form>
 
-               @if(isset($bl))
-               <ul id="danh-sach-binh-luan">
+               @if(isset($bl) && $bl != null)
+               <ul id="danh-sach-binh-luan" style="background-color: #0f1419;border: 1px solid #8fa3ff;margin-top: 20px;padding: 20px 40px;list-style: none; border-radius: 6px; color: #fff">
                   @foreach($bl as $comment)
+                  @if($comment->status == 1)
                      <li>
-                        <p class="name-us">{{$comment->user->name}}</p>
-                        <span>{{$comment->noidung}}</span>
-                        <span class="cmt-id" style="display: none">{{$comment->id}}</span>
-                        <p class="us-id" style="display: none">{{$comment->user->id}}</p>
-                        <div class="reply-cmt" onclick="click_rep()">Trả lời</div>
-
+                        <div class="cmt">
+                           <img src="https://t3.ftcdn.net/jpg/05/53/79/60/360_F_553796090_XHrE6R9jwmBJUMo9HKl41hyHJ5gqt9oz.jpg" alt="" style="width: 40px; border: 1px solid black; border-radius: 50%;">
+                           <span class="name-us" style="font-size: 16px;font-weight: 600;color: #5da5ff; margin-right: 4px;">{{$comment->user->name}}</span>
+                           <span>{{$comment->noidung}}</span>
+                           <span class="cmt-id" style="display: none">{{$comment->id}}</span>
+                           <p class="us-id" style="display: none">{{$comment->user->id}}</p>
+                           <div class="reply-cmt" onclick="click_rep()" style="margin-left: 45px; margin-bottom: 10px; cursor: pointer;">Trả lời</div>
+                        </div>
                         @if(isset($comment->movie_comment_reply))
-                           <ul>
-                              @foreach($comment->movie_comment_reply as $key => $rep)
+                        <ul style="list-style: none">
+                           @foreach($comment->movie_comment_reply as $key => $rep)
+                           @if($rep->status == 1)
                                  <li>
-                                    <p class="name-us">{{$rep->user_reply->name}}</p>
-                                    <span>{{$rep->user_cmt->name}} {{$rep->noidung}}</span>
+                                    <img src="https://t3.ftcdn.net/jpg/05/53/79/60/360_F_553796090_XHrE6R9jwmBJUMo9HKl41hyHJ5gqt9oz.jpg" alt="" style="width: 40px; border: 1px solid black; border-radius: 50%;">
+                                    <span class="name-us" style="font-size: 16px;font-weight: 600;color: #5da5ff; margin-right: 4px; cursor: pointer;">{{$rep->user_reply->name}}</span>
+                                    <div style="margin-left: 45px;"> <span style="color: grey;">Reply to {{$rep->user_cmt->name}}: </span> {{$rep->noidung}}</div>
                                     <span class="cmt-id" style="display: none">{{$comment->id}}</span>
                                     <p class="us-id" style="display: none">{{$rep->user_reply->id}}</p>
                                     @if(isset($user))
-                                    <div class="reply-cmt" onclick="click_rep()">Trả lời</div>
+                                    <div class="reply-cmt" onclick="click_rep()" style="margin-left: 45px; margin-bottom: 10px;">Trả lời</div>
                                     @else 
-                                    <div data-toggle="modal" data-target="#require_login">Trả lời</div>
+                                    <div data-toggle="modal" data-target="#require_login" style="margin-left: 45px;">Trả lời</div>
                                     @endif
                                  </li>
+                              @endif
                               @endforeach
                            </ul>
                         @endif
                         
                      </li>
+                     @endif
                      @endforeach
                   </ul>
                @endif

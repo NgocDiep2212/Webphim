@@ -1,4 +1,4 @@
-@extends('layouts.ad_add')
+@extends('layouts.app')
 
 @section('content')
 <div class="container-fluid">
@@ -15,12 +15,12 @@
                     {{-- <th scope="col">Từ khóa</th>
                     <th scope="col">Thời lượng phim</th> --}}
                     <th scope="col">Hình ảnh</th>
-                    <th scope="col">Phim hot</th>
-                    <th scope="col">Định dạng</th>
-                    <th scope="col">Phụ đề</th>
-                    <th scope="col">Đường dẫn</th>
+                    {{-- <th scope="col">Phim hot</th>
+                    <th scope="col">Định dạng</th> --}}
+                    {{-- <th scope="col">Phụ đề</th> --}}
+                    {{-- <th scope="col">Đường dẫn</th> --}}
                     {{-- <th scope="col">Description</th> --}}
-                    <th scope="col">Trạng thái</th>
+                    {{-- <th scope="col">Trạng thái</th> --}}
                     <th scope="col">Danh mục</th>
                     <th scope="col">Thể loại</th>
                     <th scope="col">Quốc gia</th>
@@ -64,7 +64,7 @@
 
                       @endif
                     </td>
-                    <td>
+                    {{-- <td>
                       @if($cate->phim_hot == 0) Không
                       @else Có
                       @endif 
@@ -78,20 +78,20 @@
                       @elseif($cate->resolution == 4) FullHD
                       @else Trailer
                       @endif 
-                    </td>
-                    <td>
+                    </td> --}}
+                    {{-- <td>
                       @if($cate->vietsub == 0) Phụ đề
                       @else Thuyết minh
                       @endif 
                     </td>
-                    <td>{{$cate->slug}}</td>
+                    <td>{{$cate->slug}}</td> --}}
                     {{-- <td>{{$cate->description}}</td> --}}
-                    <td>
+                    {{-- <td>
                         @if($cate->status) Hiển thị
                         @else Không hiển thị
                         @endif 
                         
-                    </td>
+                    </td> --}}
                    
                     {{-- <td>{{$cate->category->title}}</td> --}}
                     {{-- bang movie_genre thuoc movie --}}

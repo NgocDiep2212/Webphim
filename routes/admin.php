@@ -78,8 +78,12 @@ Route::middleware('auth:admin')->group(function (){
     Route::get('/xoa-nv',[NhanVienController::class, 'xoa_nv'])->name('xoa-nv');
     Route::post('/khoiphuc-nv/{slug}', [NhanVienController::class,'khoiphuc_nv'])->name('khoiphuc-nv');
     Route::get('/thongke',[HomeController::class, 'chart'])->name('thongke');
+    Route::get('/sales-chart-time',[HomeController::class, 'sales_chart_time'])->name('sales-chart-time');
+    Route::get('/views-chart-time',[HomeController::class, 'views_chart_time'])->name('views-chart-time');
+    // Route::post('/thongke',[HomeController::class, 'chart'])->name('thongke');
     Route::get('/get-month-views',[HomeController::class, 'getMonthViews'])->name('get-month-views');
     Route::get('/get-month-sales',[HomeController::class, 'getMonthSales'])->name('get-month-sales');
+    Route::get('/ban-cmt',[HomeController::class, 'banCmt'])->name('ban-cmt');
     
     //duyet admin
     Route::get('/duyet-phim',[DuyetController::class, 'duyetphim'])->name('duyet-phim');

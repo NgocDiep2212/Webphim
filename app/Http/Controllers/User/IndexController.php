@@ -20,6 +20,9 @@ use App\Models\Rating;
 use App\Models\YeuThich;
 use App\Models\GoiVip;
 use App\Models\HoaDon;
+use App\Models\User;
+use App\Mail\PaySuccess;
+
 
 use Algenza\Cosinesimilarity\Cosine;
 use Mail;
@@ -34,14 +37,17 @@ class IndexController extends Controller
         $user = Auth::guard('web')->user();
         $yeuthich_list = "";
         $visitor = \Tracker::currentSession();
-        if($visitor) {
-            $visitor->user_id= Auth::user()->id;
-            $visitor->save();
+        if(isset($user)){
+            if($visitor) {
+                $visitor->user_id= Auth::user()->id;
+                $visitor->save();
+            }
+            $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
+
         }
-        $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
         $category_home = Category::with(['movie' => function($q){
                                                         $q->withCount('episode');
-                                                    }])->orderBy('id','DESC')->where('status',1)->get();
+                                                    }])->orderBy('id','ASC')->where('status',1)->get();
         return view('pages.home', compact('category_home','yeuthich_list'));
     }
     public function category($slug){
@@ -89,8 +95,6 @@ class IndexController extends Controller
         //lay tap phim dau tien
         $episode_first = Episode::with('movie')->where('movie_id', $movie->id)->orderBy('episode','asc')->first();
         
-        //order by random but not chứa phim có slug hiện tại, phim có thể bạn thích dựa vào cùng category
-        $related = Movie::with('category','genre','country')->where('country_id',$movie->country->id)->orderBy(DB::raw('RAND()'))->whereNotIn('slug',[$slug])->where('status',1)->where('duyet',1)->get();
         //lay 3 tap gan nhat
         $episode = Episode::with('movie')->where('movie_id', $movie->id)->orderBy('episode','DESC')->take('3')->get();
         //lay tong tap phim da them
@@ -119,12 +123,19 @@ class IndexController extends Controller
             $yeuthich_list = YeuThich::where('user_id',$user->id)->with('movie')->with('movie_sum')->get();
             $yeuthich = YeuThich::where('movie_id',$movie->id)->with('movie')->where('user_id',$user->id)->count();
         }
+
+        
+        $related = Movie::with('category','genre','country')->where('category_id',$movie->category->id)->orderBy(DB::raw('RAND()'))->whereNotIn('slug',[$slug])->get();
         return view('pages.movie',compact('user','yeuthich','yeuthich_list','rating','count_total','bl','movie','related','episode','episode_first','episode_current_list_count'));
     }
     public function watch($slug, $tap, $server_active){
         $user = Auth::guard('web')->user();
         $movie = Movie::with('category','genre','movie_genre','country','episode')->where('slug',$slug)->where('duyet',1)->where('status',1)->first();
-        $top_related = $this->related_movie($user->id);
+        if(isset($user)){
+            $top_related = $this->related_movie($user->id);
+        }else{
+            $top_related = [];
+        }
         
         $related = [];
         if(count($top_related) > 1){
@@ -382,9 +393,9 @@ class IndexController extends Controller
         $vnp_Returnurl = route('thanh-toan-vnpay-success');
         $vnp_TmnCode = "RJLXJOSR";//Mã website tại VNPAY 
         $vnp_HashSecret = "CHZQVSUZDBYJAKFNXFRUVYUWHOGICVPH"; //Chuỗi bí mật
-
-        $last_id = HoaDon::orderBy('id','desc')->first();
-        $vnp_TxnRef = $last_id->id + 1; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
+        
+        //return $last_id;
+        $vnp_TxnRef =  rand(100, 100000); //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
         $vnp_OrderInfo = $data['goi_id'];
         $vnp_OrderType = 'billpayment';
         $vnp_Amount = $data['total_vnpay'] * 100;
@@ -453,12 +464,20 @@ class IndexController extends Controller
         
         $order = new HoaDon();
         $order->user_id = $user->id;
+        $user_current = User::find($user->id);
         $order->goi_id = $data['vnp_OrderInfo'];
+        $goi = GoiVip::where('id', $data['vnp_OrderInfo'])->first();
         $order->status = 1;
         $date_temp = substr($data['vnp_PayDate'], 0, 8);
-        $date = date('d-m-Y', strtotime($date_temp)) ;
+        $date = date('Y-m-d', strtotime($date_temp)) ;
         $order->created_at = $date; //20240304
-        $order->expired_at =date('d-m-Y', strtotime($date . ' +30 days'));
+        if($goi->duration == '1 tháng'){
+            $order->expired_at =date('Y-m-d', strtotime($date . ' +30 days'));
+        }else if($goi->duration == '3 tháng'){
+            $order->expired_at = date('Y-m-d', strtotime($date . ' +60 days'));
+        }else if($goi->duration == '12 tháng'){
+            $order->expired_at = date('Y-m-d', strtotime($date . ' +365 days'));
+        }
         $order->hinhthuctt = 'vnpay';
         $order->total = $data['vnp_Amount'];
         $order->bankCode = $data['vnp_BankCode'];
@@ -466,6 +485,8 @@ class IndexController extends Controller
         $order->cardType = $data['vnp_CardType'];
         $order->transactionNo = $data['vnp_TransactionNo'];
         $order->save();
+        //return $order;
+        Mail::to($user_current)->send(new PaySuccess());
         return redirect()->route('pay-success');
     }
 
@@ -475,14 +496,7 @@ class IndexController extends Controller
         return view('pages.thanhcong',compact('order'));
     }
 
-    public function nangcap(){
-        $user = Auth::guard('web')->user();
-        $nc = new YeuCau();
-        $nc->user_id = $user->id;
-        $nc->created_at = Carbon::now('Asia/Ho_Chi_Minh');
-        $nc->save();
-        return redirect()->back();
-    }
+    
 
     public function related_movie($user_id){
         $rates = Rating::all();
@@ -493,50 +507,49 @@ class IndexController extends Controller
             $matrix[$rate->user_id][$rate->movie_id] = $rate->rate;
         }
         $recommendations = $this->getRecommendation($matrix, $user_id);
-        //return $this->getRecommendation($matrix, 11);
 
         $topMovies = [];
         $count = 0;
         foreach ($recommendations as $movieId => $score) {
-        if ($count < 5) {
-            $topMovies[] = $movieId;
-            $count++;
-        } else {
-            break;
-        }
+            if ($count < 5) {
+                $topMovies[] = $movieId;
+                $count++;
+            } else {
+                break;
+            }
         }
         return $topMovies;
 
     }
-    function getSimilarity($matrix, $item, $otherProduct)
-{
-	$vectorUser = array();
-	$vectorOtherUser = array();
-	$match = 0;
-	foreach ($matrix[$item] as $key => $value) {
-		if (array_key_exists($key, $matrix[$otherProduct])) {
-			$vectorUser[] = $value;
-			$vectorOtherUser[] = $matrix[$otherProduct][$key];
-			$match++;
-		} else {
-			$vectorUser[] = $value;
-			$vectorOtherUser[] = 0;
-		}
-	}
 
-	foreach ($matrix[$otherProduct] as $key => $value) {
-		if (array_key_exists($key, $matrix[$item])) { } else {
-			$vectorOtherUser[] = $value;
-			$vectorUser[] = 0;
-		}
-	}
-	$data =  Cosine::similarity($vectorUser, $vectorOtherUser);
-	if ($match == 0) {
-		return -1;
-	}
+    function getSimilarity($matrix, $item, $otherProduct){
+        $vectorUser = array();
+        $vectorOtherUser = array();
+        $match = 0;
+        foreach ($matrix[$item] as $key => $value) {
+            if (array_key_exists($key, $matrix[$otherProduct])) {
+                $vectorUser[] = $value;
+                $vectorOtherUser[] = $matrix[$otherProduct][$key];
+                $match++;
+            } else {
+                $vectorUser[] = $value;
+                $vectorOtherUser[] = 0;
+            }
+        }
 
-	return $data;
-}
+        foreach ($matrix[$otherProduct] as $key => $value) {
+            if (array_key_exists($key, $matrix[$item])) { } else {
+                $vectorOtherUser[] = $value;
+                $vectorUser[] = 0;
+            }
+        }
+        $data =  Cosine::similarity($vectorUser, $vectorOtherUser);
+        if ($match == 0) {
+            return -1;
+        }
+
+        return $data;
+    }
 
 function getRecommendation($matrix, $user)
 {
@@ -568,7 +581,6 @@ function getRecommendation($matrix, $user)
 	foreach ($total as $key => $value) {
 		$ranks[$key] = $value / $simsums[$key];
 	}
-	//array_multisort($ranks, SORT_DESC);
 	return $ranks;
 }
 

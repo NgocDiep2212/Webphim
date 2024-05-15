@@ -1,4 +1,4 @@
-@extends('layouts.ad_add')
+@extends('layouts.app')
 
 @section('content')
 <table class="table" id="tablephim">
@@ -20,7 +20,7 @@
     </thead>
     <tbody class="order_position">
       {{-- @if(is_array($data)) true @else {{$data['items'][0]}} @endif --}}
-      
+      @if(isset ($datas['items']))
         @foreach($datas['items'] as $key => $res)
       <tr >
         <th scope="row">{{$key}}</th>
@@ -60,6 +60,7 @@
         </td> --}}
       </tr>
         @endforeach 
+      @endif
     </tbody>
 
   </table>

@@ -43,7 +43,7 @@ class LeechMovieController extends Controller
                 'verify' => false
             ]);
         
-            for($i = 1; $i<= 30; $i++){
+            for($i = 1; $i<= 5; $i++){
                 
                 $data = $client->get('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page='.$i)->getBody()->getContents();
                 $json = json_decode($data,true);

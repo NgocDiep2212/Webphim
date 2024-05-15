@@ -25,7 +25,7 @@
                @csrf
                <input type="hidden" name="id_goi" value="{{$goi->id}}">
                <h4 style="font-weight: 600;color: #e1a626">{{$goi->name}}</h4>
-               <p style="font-size: 26px; font-weight: 600;color: white;">{{$goi->price}}</p>
+               <p style="font-size: 26px; font-weight: 600;color: white;">{{$goi->price}}đ</p>
                <p>{{$goi->duration}}</p>
                <button type="submit" class="btn btn-warning" style=" margin-top: 6px;">Mua ngay</button>
             </form>

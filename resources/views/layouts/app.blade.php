@@ -17,7 +17,7 @@
                       function hideURLbar() { window.scrollTo(0, 1); }
     </script>
     <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"> --}}
     <link href="{{asset('backends/css/bootstrap.css')}}" rel="stylesheet" type="text/css" />
     <!-- Custom CSS -->
     <link href="{{asset('backends/css/style.css')}}" rel="stylesheet" type="text/css" />
@@ -37,6 +37,7 @@
     
     <!-- //side nav css file -->
     <!-- js-->
+    
     <script src="{{asset('backends/js/jquery-1.11.1.min.js')}}"></script>
     <script src="{{asset('backends/js/modernizr.custom.js')}}"></script>
     <!--webfonts-->
@@ -51,8 +52,8 @@
     <!-- Metis Menu -->
     <script src="{{asset('backends/js/metisMenu.min.js')}}"></script>
     <script src="{{asset('backends/js/custom.js')}}"></script>
-    <script src="{{asset('js/thongke.js')}}"></script>
     <link href="{{asset('backends/css/custom.css')}}" rel="stylesheet" />
+    <script src="{{asset('js/thongke.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <style>
       .three-line-paragraph {
@@ -78,11 +79,12 @@
   <body class="cbp-spmenu-push">
     {{-- Kiem tra co dang dang nhap khong --}}
     @if(Auth::check())
+    
     <div class="main-content">
       <div
         class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left"
-        id="cbp-spmenu-s1"
-      >
+        id="cbp-spmenu-s1">
+      
         <!--left-fixed -navigation-->
         <aside class="sidebar-left">
           <nav class="navbar navbar-inverse">
@@ -92,44 +94,44 @@
                 class="navbar-toggle collapsed"
                 data-toggle="collapse"
                 data-target=".collapse"
-                aria-expanded="false"
-              >
+                aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
               <h1>
-                <a class="navbar-brand" href="{{route('home')}}"
-                  ><span class="fa fa-area-chart"></span> QUẢN LÝ <span
-                    class="dashboard_text"
-                    >Web Phim</span
-                  ></a
-                >
+                <a class="navbar-brand" href="{{route('home')}}">
+                  <span class="fa fa-area-chart"></span> QUẢN LÝ <span
+                    class="dashboard_text">Web Phim
+                  </span>
+                </a>
               </h1>
             </div>
             <div
               class="collapse navbar-collapse"
               id="bs-example-navbar-collapse-1"
             >
-              <ul class="sidebar-menu">
-                <li class="header">Quản lý webphim</li>
-                <li class="treeview">
+            @php
+              //127.0.0.1:8000/segment1/segment2/.../segmentn
+              $segment = Request::segment(2);
+            @endphp
+
+              <ul class="sidebar-menu ">
+                <li class="treeview  {{($segment == 'home' ? 'active' : '')}}">
                   <a href="{{route('home')}}">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                   </a>
                 </li>
-                @php
-                  //127.0.0.1:8000/segment1/segment2/.../segmentn
-                  $segment = Request::segment(2);
-                @endphp
-
+                
                 <?php 
                   $a = Illuminate\Support\Facades\Auth::guard('admin')->user();
                   $admin = App\Models\Admin::where('id',$a->id)->first();
                   $role = $admin->id_role;
                 ?>
                 @if($role == 0)
+                
+                
                 <li class="treeview {{($segment == 'nhanvien' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-folder-open" aria-hidden="true"></i>
@@ -178,7 +180,7 @@
                     </li>
                     <li>
                       <a href="{{route('khachvip')}}"
-                        ><i class="fa fa-angle-right"></i>Liệt Kê Khách Hàng VIP</a
+                        ><i class="fa fa-angle-right"></i>Liệt Kê Hóa Đơn VIP</a
                       >
                     </li>
                   </ul>
@@ -229,7 +231,8 @@
                     </li>
                   </ul>
                 </li>
-                @elseif($role == 1)
+                @endif
+                @if($role == 0 || $role == 1)
                 <li class="treeview {{($segment == 'category' ? 'active' : '')}}">
                   <a href="#">
                     <i class="fa fa-folder-open" aria-hidden="true"></i>
@@ -346,6 +349,7 @@
                     </li>
                   </ul>
                 </li>
+                @if($role == 1)
                 <li class="treeview {{($segment == 'lichsu-movie' ? 'active' : '')}}">
                   <a href="{{route('lichsu-movie')}}">
                     <i class="fa fa-film" aria-hidden="true"></i>
@@ -365,7 +369,9 @@
                     </li>
                   </ul> --}}
                 </li>
-                @elseif($role == 2)
+                @endif
+                @endif
+                @if($role == 0 || $role == 2)
                 <li class="treeview {{($segment == 'duyet-phim' ? 'active' : '')}}">
                   <a href="{{route('duyet-phim')}}">
                     <i class="fa fa-folder-open" aria-hidden="true"></i>
@@ -385,6 +391,7 @@
                     </li>
                   </ul> --}}
                 </li>
+                @if($role == 2)
                 <li class="treeview {{($segment == 'lichsu-duyetphim' ? 'active' : '')}}">
                   <a href="{{route('lichsu-duyetphim')}}">
                     <i class="fa fa-folder-o" aria-hidden="true"></i>
@@ -404,6 +411,7 @@
                     </li>
                   </ul> --}}
                 </li>
+                @endif
                 @endif
                 
               </ul>
@@ -789,21 +797,20 @@
     @else
     @yield('content_login')
     @endif
+    
     <!-- new added graphs chart js-->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
-    <script>
-      $(document).ready(function(){
-        $('#tablephim').DataTable();
-      });
-    </script>
-   
-    <script src="{{asset('backends/js/jquery.nicescroll.js')}}"></script>
+    
+    {{-- <script src="{{asset('backends/js/jquery.nicescroll.js')}}"></script> --}}
+    {{-- <script src="{{asset('backends/js/jquery.nicescroll.js')}}"></script> --}}
     <script src="{{asset('backends/js/scripts.js')}}"></script>
     <!--//scrolling js-->
     <!-- side nav js -->
     <script src="{{asset('backends/js/SidebarNav.min.js')}}" type="text/javascript"></script>
     <script>
-      $('.sidebar-menu').SidebarNav();
+      $(document).ready(function(){
+        $('#tablephim').DataTable();
+      });
     </script>
     
     <script src="{{asset('backends/js/bootstrap.js')}}"></script>
@@ -891,31 +898,6 @@
               });
           });
   
-         
-  
-          $('.order_position').sortable({
-              placeholder: 'ui-state-highlight',
-              update: function(event, ui) {
-                  var array_id = [];
-                  $('.order_position tr').each(function() {
-                      array_id.push($(this).attr('id'));
-                  });
-                  $.ajax({
-                      headers: {
-                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                      },
-                      url: "{{route('resorting')}}",
-                      method: "POST",
-                      data: {
-                          array_id: array_id
-                      },
-                      success: function(data) {
-                          alert('Sắp xếp thứ tự thành công');
-                      }
-                  });
-              }
-          });
-  
           $('.select-movie').change(function() {
               var id = $(this).val();
               $.ajax({
@@ -999,58 +981,104 @@
     </script> --}}
   <script type="text/javascript">
     $(document).ready(function() {
-      //Bar char
-    @if(isset($data_bar_char) && $data_bar_char != null)
-      const xValues = [
-          @foreach($data_bar_char as $key => $d)
-            "{{$d['title']}}",
-          @endforeach
-        ];
-        const yValues = [
-        @foreach($data_bar_char as $key => $d)
-          "{{$d['count_views']}}",
-        @endforeach
-      ];
-      topViewsChart(xValues,yValues);
-    @endif
+        $('.ban-cmt').click(function() {
+          // Get the closest element with class "cmt_id" (assuming it's the parent)
+          var cmtId = $(this).parent().find('.cmt_id').text()
+          console.log(cmtId);
+          $.ajax({
+                url:"{{route('ban-cmt')}}",
+                method:"GET",
+                data:{cmtId:cmtId},
+                success:function(){
+                    location.reload();
+                    alert('Khóa bình luận thành công!');
+                }
+            });
+        });
 
-  //{{-- Line char views--}}
-  $('.viewsMonthSelect').change(function() {
-        var thang = $(this).find(':selected').val();
-        viewsMonthSelectChange(thang);
-      });
-  @if(isset($monthly_views) && $monthly_views != null)
-      const yValues_line = [
-        @foreach($monthly_views as $monthlyView)
-          "{{$monthlyView->total_views}}",
-        @endforeach
-      ];
-      const labels_line = [
-        @foreach($monthly_views as $monthlyView)
-          "{{$monthlyView->day}}",
-        @endforeach
-      ];
-      viewsMonthChart(labels_line,yValues_line);
-  @endif
+        $('.ban-rep-cmt').click(function() {
+          // Get the closest element with class "cmt_id" (assuming it's the parent)
+          var repCmtId = $(this).parent().find('.cmt_id').text()
+          console.log(repCmtId);
+          $.ajax({
+                url:"{{route('ban-cmt')}}",
+                method:"GET",
+                data:{repCmtId:repCmtId},
+                success:function(){
+                    location.reload();
+                    alert('Khóa bình luận thành công!');
+                }
+            });
+        });
+      
 
-  //{{-- Line char sales--}}
-  $('.salesMonthSelect').change(function() {
-        var thang = $(this).find(':selected').val();
-        salesMonthSelectChange(thang);
+      //sales-chart mặc định 
+      @if(isset($datasets_sales) && isset($labels_sales) && $datasets_sales != null && $labels_sales != null )
+        var labels_default = JSON.parse('{!! $labels_sales !!}');
+        var datasets_default =JSON.parse('{!! $datasets_sales !!}');
+        salesMonthChart(labels_default,datasets_default);
+        //console.log(datasets_default);
+      @endif
+
+      $('#submit-sale').click(function(){
+        var dayStart = $('#dayStart_sales').val();
+        var dayEnd = $('#dayEnd_sales').val();
+        $.ajax({
+            url: "{{route('sales-chart-time')}}",
+            method: "GET",
+            data: {
+                dayStart: dayStart,
+                dayEnd: dayEnd
+            },
+            success: function(response) {
+                var yValues_line_sales = response.datasets;
+                var labels_line_sales = response.labels;
+                salesMonthChart(labels_line_sales,yValues_line_sales);
+            
+            }
+        });
       });
-  @if(isset($monthly_sales) && $monthly_sales != null)
-      const yValues_line_sales = [
-        @foreach($monthly_sales as $monthlySales)
-          "{{$monthlySales->total_sales}}",
-        @endforeach
-      ];
-      const labels_line_sales = [
-        @foreach($monthly_sales as $monthlySales)
-          "{{$monthlySales->day}}",
-        @endforeach
-      ];
-      salesMonthChart(labels_line_sales,yValues_line_sales);
-  @endif
+
+      //bar-chart mặc định 
+      @if(isset($datasets_views) && isset($labels_views) && $datasets_views != null && $labels_views != null )
+        var labels_views_default = JSON.parse('{!! $labels_views !!}');
+        var datasets_views_default =JSON.parse('{!! $datasets_views !!}');
+        topViewsChart(labels_views_default,datasets_views_default);
+        //console.log(datasets_default);
+      @endif
+
+      $('#submit-view').click(function(){
+        var dayStart_views = $('#dayStart_views').val();
+        var dayEnd_views = $('#dayEnd_views').val();
+        $.ajax({
+            url: "{{route('views-chart-time')}}",
+            method: "GET",
+            data: {
+                dayStart_views: dayStart_views,
+                dayEnd_views: dayEnd_views
+            },
+            success: function(response) {
+                var yValues_line_views = response.datasets_views;
+                var labels_line_views = response.labels_views;
+                topViewsChart(labels_line_views,yValues_line_views);
+            }
+        });
+      });
+
+    $('.ban-rep-cmt').click(function(){
+      var rep_cmt_id = $(this).closest('.ban-rep-cmt').find('.rep-cmt-id').text();
+      $.ajax({
+            url: "{{route('ban-cmt')}}",
+            method: "GET",
+            data: {
+                rep_cmt_id: rep_cmt_id,
+            },
+            success: function(response) {
+              $document.alert('Bạn đã xóa comment thành công');
+            }
+        });
+    });
+
     });
   </script>
   </body>

@@ -27,13 +27,18 @@ class MovieController extends Controller
     {
         //1 phim co nhieu tap, episode count dua vao id movie cua tap 
         $list = Movie::with('activeCategory','activeMovieGenre','activeMovieCategory','activeCountry','activeGenre')->orderBy('id', 'DESC')->get();//category -> ten function
+        $list_save = Movie::with('activeCategory','activeMovieGenre','activeMovieCategory','activeCountry','activeGenre')->where('status',1)->where('duyet',1)->orderBy('id', 'DESC')->get();//category -> ten function
         $destinationPath=public_path()."/json_file/";
         if(!is_dir($destinationPath)){
             //tao va cap quyen them sua xoa
             mkdir($destinationPath,0777,true);
         }
-        File::put($destinationPath.'movies.json',json_encode($list));
-       
+        $filePath = $destinationPath . 'movies.json';
+        if (file_exists($filePath)) {
+            // Delete existing file to prevent duplicates
+            unlink($filePath);
+        }
+        File::put($filePath,json_encode($list_save));
         return view('admincp.addAdmin.movie.index', compact('list'));
     }
 
@@ -192,7 +197,7 @@ class MovieController extends Controller
         $country = Country::where('status',1)->pluck('title','id');
         $movie = Movie::find($id);
         $movie_genre = $movie->activeMovieGenre;
-        $movie_category = $movie->activeCategory;
+        $movie_category = $movie->activeMovieCategory;
         
         return view('admincp.addAdmin.movie.form', compact('list_category','genre','country','category','movie','list_genre', 'movie_genre', 'movie_category'));
     }
@@ -223,7 +228,7 @@ class MovieController extends Controller
         $movie->description = $data['description'];
         $movie->status = $data['status'];
         $movie->country_id = $data['country_id'];
-        $movie->image = $data['image'];
+        // $movie->image = $data['image'];
 
         //$movie->count_views = rand(100, 99999);
         $movie->updated = Carbon::now('Asia/Ho_Chi_Minh');
@@ -239,20 +244,20 @@ class MovieController extends Controller
         $movie->movie_category()->sync($data['category']);
 
         // //add image
-        // $get_image = $request->file('image');
+        $get_image = $request->file('image');
 
-        // if($get_image){
-        //     if(file_exists('uploads/movie/'.$movie->image)){
-        //         unlink('uploads/movie/'.$movie->image);
-        //     }else{
-        //         $get_name_image = $get_image->getClientOriginalName(); // hinhanh.jpg
-        //         $name_image = current(explode('.',$get_name_image)); //hinhanh . jpg => hinhanh
-        //         $new_image = $name_image.rand(0,9999).'.'.$get_image->getClientOriginalExtension(); //hinhanh1234.jpg
-        //         $get_image->move('uploads/movie/',$new_image); //dua h.a vao path
-        //         $movie->image = $new_image;
-        //     }
+        if($get_image){
+            if(file_exists('uploads/movie/'.$movie->image)){
+                unlink('uploads/movie/'.$movie->image);
+            }else{
+                $get_name_image = $get_image->getClientOriginalName(); // hinhanh.jpg
+                $name_image = current(explode('.',$get_name_image)); //hinhanh . jpg => hinhanh
+                $new_image = $name_image.rand(0,9999).'.'.$get_image->getClientOriginalExtension(); //hinhanh1234.jpg
+                $get_image->move('uploads/movie/',$new_image); //dua h.a vao path
+                $movie->image = $new_image;
+            }
         
-        // }
+        }
 
         $movie->update();
         

@@ -1,4 +1,4 @@
-@extends('layouts.ad_duyet')
+@extends('layouts.app')
 @section('content')
 
    <div class="container row" >
@@ -10,6 +10,14 @@
             {!! Form::text('duration', isset($movie) ? $movie->duration : '', ['class'=>'form-control','readonly']) !!}
          </div>
          <div class="form-group">Hình ảnh: <br/> 
+               @php
+                 $image_check = substr($movie->image,0,5);
+               @endphp
+               @if($image_check =='https')
+                  <img width="60%" src="{{$movie->image}}" alt="">
+               @else
+                  <img width="60%" src="{{asset('uploads/movie/'.$movie->image)}}" alt="">
+               @endif
             <img style="max-width: 200px" src="{{$movie->image}}" alt=""> 
          </div>
          <div class="form-group">Danh mục phim:  
